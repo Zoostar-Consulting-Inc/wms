@@ -17,21 +17,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import net.zoostar.wms.model.Inventory;
-import net.zoostar.wms.web.request.InventorySearchRequest;
+import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.web.request.CustomerSearchRequest;
 
-class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
+class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 
+	
 	@Test
-	void testFindByAssetId() throws Exception {
+	void testFindByEmail() throws Exception {
 		//GIVEN
 		var entity = entities.stream().findFirst();
 		var expected = entity.get();
-		String assetId = expected.getAssetId();
-		String url = "/inventory/retrieve/" + assetId;
+		String email = expected.getEmail();
+		String url = "/customer/retrieve/" + email;
 
 		//MOCK
-		when(inventoryRepository.findByAssetId(assetId)).
+		when(customerRepository.findByEmail(email)).
 				thenReturn(entity);
 		
 		//WHEN
@@ -45,7 +46,7 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 		log.info("Response received: {}", response.getContentAsString());
 		
-		var actual = mapper.readValue(response.getContentAsString(), Inventory.class);
+		var actual = mapper.readValue(response.getContentAsString(), Customer.class);
 		log.info("Retrieved entity: {}", actual);
 		assertEquals(expected, actual);
 		assertNotEquals(actual, null);
@@ -56,18 +57,16 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.toString(), actual.toString());
 
-		assertFalse(StringUtils.isBlank(actual.getAssetId()));
-		assertEquals(expected.getAssetId(), actual.getAssetId());
-		assertEquals(expected.getSku(), actual.getSku());
+		assertFalse(StringUtils.isBlank(actual.getEmail()));
+		assertEquals(expected.getEmail(), actual.getEmail());
+		assertEquals(expected.getLocationId(), actual.getLocationId());
 		assertEquals(expected.getSource(), actual.getSource());
-		assertEquals(expected.getQuantity(), actual.getQuantity());
-		assertEquals(expected.getHomeUcn(), actual.getHomeUcn());
-		assertEquals(expected.getCurrentUcn(), actual.getCurrentUcn());
+		assertEquals(expected.getName(), actual.getName());
 	}
 
 	@Test
-	void testFindByAssetIdNoSuchElementException() throws Exception {
-		String url = "/inventory/retrieve/assetId";
+	void testFindByEmailNoSuchElementException() throws Exception {
+		String url = "/customer/retrieve/email";
 		
 		//WHEN
 	    var result = mockMvc.perform(get(url).
@@ -80,25 +79,25 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 	}
 
 	@Test
-	void testSearchAssetId() throws Exception {
+	void testSearchEmail() throws Exception {
 		//GIVEN
 		var expected = entities.stream().findFirst().get();
-		String assetId = expected.getAssetId();
+		String email = expected.getEmail();
 		
-		int size = 3;
-		Set<Inventory> expectedEntities = new HashSet<>(size);
-		entities.stream().filter(entity -> entity.getAssetId().startsWith("FE1")).
-		forEach(entity -> expectedEntities.add(entity));
+		int size = 2;
+		Set<Customer> expectedEntities = new HashSet<>(size);
+		entities.stream().filter(entity -> entity.getEmail().startsWith("user1")).
+				forEach(entity -> expectedEntities.add(entity));
 
-		String url = "/inventory/search";
-		var request = new InventorySearchRequest();
-		request.getSearchTerms().add(assetId);
-		request.getSearchTerms().add("FE1*");
+		String url = "/customer/search";
+		var request = new CustomerSearchRequest();
+		request.getSearchTerms().add(email);
+		request.getSearchTerms().add("user1*");
 
 		//MOCK
-		when(inventoryRepository.findByAssetId(assetId)).
+		when(customerRepository.findByEmail(email)).
 				thenReturn(Optional.of(expected));
-		when(inventoryRepository.findByAssetIdStartsWith("FE1")).
+		when(customerRepository.findByEmailStartsWith("user1")).
 				thenReturn(expectedEntities);
 		
 		//WHEN
@@ -113,19 +112,19 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
 		log.info("Response received: {}", response.getContentAsString());
 		
-		Set<Inventory> results = mapper.readValue(response.getContentAsString(),
-				mapper.getTypeFactory().constructCollectionType(Set.class, Inventory.class));
+		Set<Customer> results = mapper.readValue(response.getContentAsString(),
+				mapper.getTypeFactory().constructCollectionType(Set.class, Customer.class));
 		assertNotNull(results);
 		log.info("Result: {}", results);
-		assertEquals(4, results.size());
+		assertEquals(3, results.size());
 	}
 
 	@Test
-	void testFindByNonExistentAssetId() throws Exception {
+	void testFindByNonExistentEmail() throws Exception {
 		//GIVEN
-		String url = "/inventory/search";
-		var request = new InventorySearchRequest();
-		request.getSearchTerms().add("assetId");
+		String url = "/customer/search";
+		var request = new CustomerSearchRequest();
+		request.getSearchTerms().add("email");
 		
 		//WHEN
 	    var response = mockMvc.perform(post(url).
@@ -140,13 +139,13 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 	}
 
 	@Override
-	protected Class<Inventory> getClazz() {
-		return Inventory.class;
+	protected String getPath() {
+		return "data/customer.json";
 	}
 
 	@Override
-	protected String getPath() {
-		return "data/inventory.json";
+	protected Class<Customer> getClazz() {
+		return Customer.class;
 	}
 
 }

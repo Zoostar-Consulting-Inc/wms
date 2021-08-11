@@ -10,8 +10,8 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString
 public class Inventory extends AbstractMultiSourceStringPersistable implements Comparable<Inventory> {
 
 	private String assetId;

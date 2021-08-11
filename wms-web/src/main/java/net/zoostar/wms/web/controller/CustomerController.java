@@ -16,33 +16,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.model.Inventory;
-import net.zoostar.wms.service.InventoryService;
-import net.zoostar.wms.web.request.InventorySearchRequest;
+import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.service.CustomerService;
+import net.zoostar.wms.web.request.CustomerSearchRequest;
 
 @Slf4j
 @RestController
-@RequestMapping("/inventory")
-public class InventoryController {
+@RequestMapping("/customer")
+public class CustomerController {
 
 	@Autowired
-	protected InventoryService inventoryManager;
+	protected CustomerService customerManager;
 	
 	@ExceptionHandler(NoSuchElementException.class)
-	protected ResponseEntity<Inventory> handleExceptions(NoSuchElementException e) {
+	protected ResponseEntity<Customer> handleExceptions(NoSuchElementException e) {
 		log.warn(e.getMessage());
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 	
-	@GetMapping(value = "/retrieve/{assetId}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Inventory> retrieveByAssetId(@PathVariable String assetId) {
-		log.info("API triggered: /retrieve/{}", assetId);
-		return new ResponseEntity<>(inventoryManager.retrieveByAssetId(assetId), HttpStatus.OK);
+	@GetMapping(value = "/retrieve/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Customer> retrieveByEmail(@PathVariable String email) {
+		log.info("API triggered: /retrieve/{}", email);
+		return new ResponseEntity<>(customerManager.retrieveByEmail(email), HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/search", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Set<Inventory>> search(@RequestBody InventorySearchRequest request) {
-		log.info("{}", "API triggered: /inventory/search");
-		return new ResponseEntity<>(inventoryManager.search(request.getSearchTerms()), HttpStatus.OK);
+	public ResponseEntity<Set<Customer>> search(@RequestBody CustomerSearchRequest request) {
+		log.info("{}", "API triggered: /customer/search");
+		return new ResponseEntity<>(customerManager.search(request.getSearchTerms()), HttpStatus.OK);
 	}
 }
