@@ -111,10 +111,11 @@ class InventoryControllerTest {
 
 		assertFalse(StringUtils.isBlank(actual.getAssetId()));
 		assertEquals(expected.getAssetId(), actual.getAssetId());
-		assertEquals(expected.getDesc(), actual.getDesc());
-		assertEquals(expected.getName(), actual.getName());
 		assertEquals(expected.getSku(), actual.getSku());
 		assertEquals(expected.getSource(), actual.getSource());
+		assertEquals(expected.getQuantity(), actual.getQuantity());
+		assertEquals(expected.getHomeUcn(), actual.getHomeUcn());
+		assertEquals(expected.getCurrentUcn(), actual.getCurrentUcn());
 	}
 
 	@Test

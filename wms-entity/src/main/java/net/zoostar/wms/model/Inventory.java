@@ -18,9 +18,11 @@ public class Inventory extends AbstractMultiSourceStringPersistable implements C
 	
 	private String sku;
 	
-	private String name;
+	private String homeUcn;
 	
-	private String desc;
+	private String currentUcn;
+	
+	private int quantity;
 
 	@Override
 	public int hashCode() {
