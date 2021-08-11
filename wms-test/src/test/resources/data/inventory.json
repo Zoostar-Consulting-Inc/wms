@@ -1,0 +1,101 @@
+[
+  {
+  	"id": "1",
+  	"assetId" : "FE28888",
+    "sku": "sku2",
+    "name": "Product Name 2",
+    "desc": "Product Description 2",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "2",
+  	"assetId" : "FE18888",
+    "sku": "sku1",
+    "name": "Product Name 1",
+    "desc": "Product Description 1",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "3",
+  	"assetId" : "FE38888",
+    "sku": "sku1",
+    "name": "Product Name 1",
+    "desc": "Product Description 1",
+    "new": "false",
+    "source": "source2"
+  },
+  {
+  	"id": "4",
+  	"assetId" : "FE48888",
+    "sku": "sku4",
+    "name": "Product Name 4",
+    "desc": "Product Description 4",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "5",
+  	"assetId" : "FE58888",
+    "sku": "sku5",
+    "name": "Product Name 5",
+    "desc": "Product Description 5",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "6",
+  	"assetId" : "FE68888",
+    "sku": "sku6",
+    "name": "Product Name 6",
+    "desc": "Product Description 6",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "7",
+  	"assetId" : "FE78888",
+    "sku": "sku7",
+    "name": "Product Name 7",
+    "desc": "Product Description 7",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "8",
+  	"assetId" : "FE88888",
+    "sku": "sku8",
+    "name": "Product Name 8",
+    "desc": "Product Description 8",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "9",
+  	"assetId" : "FE98888",
+    "sku": "sku9",
+    "name": "Product Name 9",
+    "desc": "Product Description 9",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "10",
+  	"assetId" : "FE10888",
+    "sku": "sku10",
+    "name": "Product Name 10",
+    "desc": "Product Description 10",
+    "new": "false",
+    "source": "source1"
+  },
+  {
+  	"id": "11",
+  	"assetId" : "FE11888",
+    "sku": "sku11",
+    "name": "Product Name 11",
+    "desc": "Product Description 11",
+    "new": "false",
+    "source": "source1"
+  }
+]
