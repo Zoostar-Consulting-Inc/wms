@@ -1,6 +1,7 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,7 +15,7 @@ import org.springframework.http.MediaType;
 import net.zoostar.wms.model.User;
 import net.zoostar.wms.web.request.UserSearchRequest;
 
-public class UserControllerTest extends AbstractMockBeanTestContext<User> {
+class UserControllerTest extends AbstractMockBeanTestContext<User> {
 
 	@Test
 	void testRetrieveUserByUserId() throws Exception {
@@ -39,7 +40,12 @@ public class UserControllerTest extends AbstractMockBeanTestContext<User> {
 		var response = result.getResponse();
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		User actual = mapper.readValue(response.getContentAsString(), User.class);
+		assertEquals(expected, actual);
 		assertEquals(expected.getUserId(), actual.getUserId());
+		assertEquals(0, expected.compareTo(actual));
+		var unexpected = entities.get(1);
+		unexpected.setSource("xyz");
+		assertNotEquals(unexpected, actual);
 	}
 
 	@Test
