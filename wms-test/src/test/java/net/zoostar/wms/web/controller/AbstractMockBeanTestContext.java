@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
+import net.zoostar.wms.dao.UserRepository;
 import net.zoostar.wms.model.AbstractMultiSourceStringPersistable;
 
 @ActiveProfiles({"test"})
@@ -34,6 +35,9 @@ public abstract class AbstractMockBeanTestContext<T extends AbstractMultiSourceS
 	
 	@MockBean
 	protected InventoryRepository inventoryRepository;
+	
+	@MockBean
+	protected UserRepository userRepository;
 
 	@BeforeEach
 	@Override
