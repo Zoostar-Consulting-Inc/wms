@@ -25,6 +25,7 @@ public class IndexController implements InitializingBean {
 	
 	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
 	public ModelAndView index(Map<String, Object> model) {
+		log.info("{}", "Loading index page...");
 		model.put("env", env);
 		model.put("message", message);
 		return new ModelAndView("index", model);

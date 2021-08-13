@@ -41,8 +41,11 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		User actual = mapper.readValue(response.getContentAsString(), User.class);
 		assertEquals(expected, actual);
+		assertEquals(expected.hashCode(), actual.hashCode());
 		assertEquals(expected.getUserId(), actual.getUserId());
 		assertEquals(0, expected.compareTo(actual));
+		assertNotNull(actual.toString());
+		
 		var unexpected = entities.get(1);
 		unexpected.setSource("xyz");
 		assertNotEquals(unexpected, actual);

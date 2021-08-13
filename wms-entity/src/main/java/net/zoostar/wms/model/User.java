@@ -2,11 +2,16 @@ package net.zoostar.wms.model;
 
 import java.util.Objects;
 
+import javax.persistence.Entity;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@Entity
+@ToString
 public class User extends AbstractMultiSourceStringPersistable implements Comparable<User> {
 
 	private String userId;
