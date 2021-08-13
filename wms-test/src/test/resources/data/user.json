@@ -1,79 +1,57 @@
 [
   {
   	"id": "1",
-    "email": "user1@email.com",
-    "firstName": "First1",
-    "lastName": "Last1",
+    "userId": "user1@email.com",
     "source": "default"
   },
   {
   	"id": "2",
-    "email": "user2@email.com",
-    "firstName": "First2",
-    "lastName": "Last2",
+    "userId": "user2@email.com",
     "source": "default"
   },
   {
   	"id": "3",
-    "email": "user3@email.com",
-    "firstName": "First3",
-    "lastName": "Last3",
+    "userId": "user3@email.com",
     "source": "default"
   },
   {
   	"id": "4",
-    "email": "user4@email.com",
-    "firstName": "First4",
-    "lastName": "Last4",
+    "userId": "user4@email.com",
     "source": "default"
   },
   {
   	"id": "5",
-    "email": "user5@email.com",
-    "firstName": "First5",
-    "lastName": "Last5",
+    "userId": "user5@email.com",
     "source": "default"
   },
   {
   	"id": "6",
-    "email": "user6@email.com",
-    "firstName": "First6",
-    "lastName": "Last6",
+    "userId": "user6@email.com",
     "source": "default"
   },
   {
   	"id": "7",
-    "email": "user7@email.com",
-    "firstName": "First7",
-    "lastName": "Last7",
+    "userId": "user7@email.com",
     "source": "default"
   },
   {
   	"id": "8",
-    "email": "user8@email.com",
-    "firstName": "First8",
-    "lastName": "Last8",
+    "userId": "user8@email.com",
     "source": "default"
   },
   {
   	"id": "9",
-    "email": "user9@email.com",
-    "firstName": "First9",
-    "lastName": "Last9",
+    "userId": "user9@email.com",
     "source": "default"
   },
   {
   	"id": "10",
-    "email": "user10@email.com",
-    "firstName": "First10",
-    "lastName": "Last10",
+    "userId": "user10@email.com",
     "source": "default"
   },
   {
   	"id": "11",
-    "email": "user11@email.com",
-    "firstName": "First11",
-    "lastName": "Last11",
+    "userId": "user11@email.com",
     "source": "default"
   }
 ]
