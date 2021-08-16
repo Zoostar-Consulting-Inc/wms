@@ -28,6 +28,8 @@
 		p:suffix=".jsp"
 	/>
 	
+	<bean class="org.springframework.web.client.RestTemplate" />
+	
 	<beans profile="test">
 		<context:property-placeholder location="classpath:app.properties, classpath:test/env.properties" />
 	</beans>

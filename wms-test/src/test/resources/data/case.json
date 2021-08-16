@@ -1,0 +1,10 @@
+[
+  {
+    "id": "1",
+    "caseId": "1",
+    "caseDate": 1672462800000,
+    "customerUcn": "01386585",
+    "userId": "user1@email.com",
+    "assetIds": ["FE28888", "FE18888"]
+  }
+]
