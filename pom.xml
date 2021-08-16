@@ -165,7 +165,6 @@
 	</repositories>
 	<organization>
 		<name>Zoostar Consulting, Inc.</name>
-		<url>https://sonarcloud.io/dashboard?id=Zoostar-Consulting-Inc_wms</url>
 	</organization>
 	<scm>
 		<url>https://github.com/Zoostar-Consulting-Inc/wms</url>
@@ -175,7 +174,7 @@
 	</scm>
 	<issueManagement>
 		<system>JIRA</system>
-		<url></url>
+		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
 	</issueManagement>
 	<name>WMS</name>
 	<inceptionYear>2021</inceptionYear>
@@ -184,4 +183,5 @@
 		<system>GitHub Actions</system>
 		<url>https://github.com/Zoostar-Consulting-Inc/wms/actions</url>
 	</ciManagement>
+	<url>https://sonarcloud.io/dashboard?id=Zoostar-Consulting-Inc_wms</url>
 </project>
