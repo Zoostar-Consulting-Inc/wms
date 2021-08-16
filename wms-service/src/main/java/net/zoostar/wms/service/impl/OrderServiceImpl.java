@@ -53,10 +53,9 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	
 	protected void initHttpHeaders() {
 		log.info("{}", "Initializing HttpHeaders...");
-        HttpHeaders headers = new HttpHeaders();
+        headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
-//        headers.add("Authorization", "Basic " + encodedAuth);
         log.info("HttpHeaders initialized: {}.", headers);
 	}
 

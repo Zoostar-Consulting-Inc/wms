@@ -1,9 +1,8 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -49,9 +48,10 @@ class OrderControllerTest extends AbstractMockBeanTestContext<Case> {
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		log.info("Response: {}", response.toString());
 		var actual = mapper.readValue(response.getContentAsString(), Case.class);
+		var another = actual;
 		assertEquals(expected, actual);
-		assertTrue(actual.equals(actual));
-		assertFalse(actual.equals(request));
+		assertEquals(another, actual);
+		assertNotEquals(request, actual);
 		assertEquals(expected.hashCode(), actual.hashCode());
 		assertNotNull(actual.toString());
 	}
