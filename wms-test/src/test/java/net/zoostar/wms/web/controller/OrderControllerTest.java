@@ -26,6 +26,30 @@ class OrderControllerTest extends AbstractMockBeanTestContext<Case> {
 	@Test
 	void testSubmitOrder() throws Exception {
 		//GIVEN
+		var expected = entities.get(0);
+		var request = new CaseOrderSubmitRequest(expected);
+		var entity = new HttpEntity<>(request.toEntity(), orderManager.getHeaders());
+		
+		//MOCK
+		when(restTemplate.exchange("localhost", HttpMethod.POST, entity, Case.class)).
+				thenReturn(new ResponseEntity<Case>(request.toEntity(), HttpStatus.OK));
+		
+		//WHEN
+		var response = orderManager.order(expected);
+		var actual = response.getBody();
+
+		//THEN
+		var another = actual;
+		assertEquals(expected, actual);
+		assertEquals(another, actual);
+		assertNotEquals(null, actual);
+		assertEquals(expected.hashCode(), actual.hashCode());
+		assertNotNull(actual.toString());
+	}
+
+	@Test
+	void testSubmitOrderWithNullId() throws Exception {
+		//GIVEN
 		var url = "/order";
 		var expected = entities.get(0);
 		var request = new CaseOrderSubmitRequest(expected);
