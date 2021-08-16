@@ -51,7 +51,7 @@ class OrderControllerTest extends AbstractMockBeanTestContext<Case> {
 		var another = actual;
 		assertEquals(expected, actual);
 		assertEquals(another, actual);
-		assertNotEquals(request, actual);
+		assertNotEquals(null, actual);
 		assertEquals(expected.hashCode(), actual.hashCode());
 		assertNotNull(actual.toString());
 	}
