@@ -1,5 +1,7 @@
 package net.zoostar.wms.service;
 
+import net.zoostar.wms.model.Client;
+
 public interface ClientService {
-	String getUrl(String ucn);
+	Client retrieve(String ucn);
 }

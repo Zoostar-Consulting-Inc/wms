@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
+import net.zoostar.wms.model.Client;
 import net.zoostar.wms.model.OrderUpdate;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.OrderService;
@@ -46,10 +47,10 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		}
 		
 		String ucn = order.getCustomerUcn();
-		String url = clientManager.getUrl(ucn);
+		Client client = clientManager.retrieve(ucn);
         HttpEntity<Case> request = new HttpEntity<>(order, headers);
-        log.info("Placing order to {} with Request {}...", url, request.toString());
-        return restTemplate.exchange(url, HttpMethod.POST, request, Case.class);
+        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
+        return restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
 	}
 
 	@Override

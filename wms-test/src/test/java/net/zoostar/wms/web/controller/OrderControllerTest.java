@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.model.Case;
+import net.zoostar.wms.model.Client;
 import net.zoostar.wms.model.OrderStatus;
 import net.zoostar.wms.model.OrderUpdate;
 import net.zoostar.wms.service.OrderService;
@@ -39,12 +40,19 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		Collections.addAll(assetIds, "FE28888", "FE18888");
 		expected.setAssetIds(assetIds);
 
+		var client = new Client();
+		client.setBaseUrl("localhost:" + expected.getCustomerUcn());
+		client.setId("1");
+		client.setName("Some Restful Client");
+		client.setUcn(expected.getCustomerUcn());
+		log.info("Found client for UCN: {}", client.toString());
+		
 		var entity = new HttpEntity<>(expected, orderManager.getHeaders());
 		
 		//MOCK
-		when(clientManager.getUrl(expected.getCustomerUcn())).
-				thenReturn("localhost:" + expected.getCustomerUcn());
-		when(restTemplate.exchange("localhost:" + expected.getCustomerUcn(), HttpMethod.POST, entity, Case.class)).
+		when(clientRepository.findByUcn(expected.getCustomerUcn())).
+				thenReturn(client);
+		when(restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, entity, Case.class)).
 				thenReturn(new ResponseEntity<Case>(expected, HttpStatus.OK));
 
 		//WHEN
@@ -72,13 +80,19 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var assetIds = new TreeSet<String>();
 		Collections.addAll(assetIds, "FE28888", "FE18888");
 		expected.setAssetIds(assetIds);
+
+		var client = new Client();
+		client.setBaseUrl("localhost:" + expected.getCustomerUcn());
+		client.setId("1");
+		client.setName("Some Restful Client");
+		client.setUcn(expected.getCustomerUcn());
 		
 		var entity = new HttpEntity<>(expected, orderManager.getHeaders());
 		
 		//MOCK
-		when(clientManager.getUrl(expected.getCustomerUcn())).
-				thenReturn("localhost:" + expected.getCustomerUcn());
-		when(restTemplate.exchange("localhost:" + expected.getCustomerUcn(), HttpMethod.POST, entity, Case.class)).
+		when(clientRepository.findByUcn(expected.getCustomerUcn())).
+				thenReturn(client);
+		when(restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, entity, Case.class)).
 				thenReturn(new ResponseEntity<Case>(expected, HttpStatus.OK));
 		
 		//WHEN
