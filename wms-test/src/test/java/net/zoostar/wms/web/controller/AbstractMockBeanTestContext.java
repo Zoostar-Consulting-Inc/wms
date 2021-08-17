@@ -6,42 +6,18 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.zoostar.wms.dao.CustomerRepository;
-import net.zoostar.wms.dao.InventoryRepository;
-import net.zoostar.wms.dao.UserRepository;
 import net.zoostar.wms.model.AbstractStringPersistable;
 
-@ActiveProfiles({"test"})
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
 public abstract class AbstractMockBeanTestContext<T extends AbstractStringPersistable>
 		extends AbstractControllerTestContext {
 	
-	protected final ObjectMapper mapper = new ObjectMapper();
-	
 	protected List<T> entities;
-	
-	@MockBean
-	protected CustomerRepository customerRepository;
-	
-	@MockBean
-	protected InventoryRepository inventoryRepository;
-	
-	@MockBean
-	protected UserRepository userRepository;
-	
-	@MockBean
-	protected RestTemplate restTemplate;
 
 	@BeforeEach
 	@Override

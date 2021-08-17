@@ -18,11 +18,12 @@ import org.springframework.web.client.RestTemplate;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
+import net.zoostar.wms.model.OrderUpdate;
 import net.zoostar.wms.service.OrderService;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService, InitializingBean {
 
 	@Value("${case.order.url:localhost}")
@@ -35,7 +36,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	protected HttpHeaders headers;
 	
 	@Override
-	@Transactional(readOnly = true)
 	public ResponseEntity<Case> order(Case order) {
 		if(StringUtils.isBlank(order.getId())) {
 			order.setId(UUID.randomUUID().toString());
@@ -57,6 +57,17 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
         log.info("HttpHeaders initialized: {}.", headers);
+	}
+
+	@Override
+	public ResponseEntity<OrderUpdate> update(OrderUpdate update) {
+		if(StringUtils.isBlank(update.getId())) {
+			update.setId(UUID.randomUUID().toString());
+		}
+		
+        HttpEntity<OrderUpdate> request = new HttpEntity<>(update, headers);
+        log.info("Updating order status to {} with Request {}...", url, request.toString());
+        return restTemplate.exchange(url, HttpMethod.POST, request, OrderUpdate.class);
 	}
 
 }
