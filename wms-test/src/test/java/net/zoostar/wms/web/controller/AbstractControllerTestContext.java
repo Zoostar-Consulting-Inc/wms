@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
 import net.zoostar.wms.dao.UserRepository;
+import net.zoostar.wms.service.ClientService;
 
 @WebAppConfiguration
 @ActiveProfiles({"test"})
@@ -42,6 +43,9 @@ public abstract class AbstractControllerTestContext {
 	
 	@MockBean
 	protected UserRepository userRepository;
+	
+	@MockBean
+	protected ClientService clientManager;
 	
 	@MockBean
 	protected RestTemplate restTemplate;

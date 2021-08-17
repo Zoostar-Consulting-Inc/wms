@@ -42,9 +42,11 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var entity = new HttpEntity<>(expected, orderManager.getHeaders());
 		
 		//MOCK
-		when(restTemplate.exchange("localhost", HttpMethod.POST, entity, Case.class)).
+		when(clientManager.getUrl(expected.getCustomerUcn())).
+				thenReturn("localhost:" + expected.getCustomerUcn());
+		when(restTemplate.exchange("localhost:" + expected.getCustomerUcn(), HttpMethod.POST, entity, Case.class)).
 				thenReturn(new ResponseEntity<Case>(expected, HttpStatus.OK));
-		
+
 		//WHEN
 		var response = orderManager.order(expected);
 		var actual = response.getBody();
@@ -74,7 +76,9 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var entity = new HttpEntity<>(expected, orderManager.getHeaders());
 		
 		//MOCK
-		when(restTemplate.exchange("localhost", HttpMethod.POST, entity, Case.class)).
+		when(clientManager.getUrl(expected.getCustomerUcn())).
+				thenReturn("localhost:" + expected.getCustomerUcn());
+		when(restTemplate.exchange("localhost:" + expected.getCustomerUcn(), HttpMethod.POST, entity, Case.class)).
 				thenReturn(new ResponseEntity<Case>(expected, HttpStatus.OK));
 		
 		//WHEN

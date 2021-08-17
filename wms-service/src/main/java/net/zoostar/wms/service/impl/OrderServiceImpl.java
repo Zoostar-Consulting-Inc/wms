@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.OrderUpdate;
+import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.OrderService;
 
 @Slf4j
@@ -26,8 +27,11 @@ import net.zoostar.wms.service.OrderService;
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService, InitializingBean {
 
-	@Value("${case.order.url:localhost}")
+	@Value("${order.update.url:localhost}")
 	protected String url;
+
+	@Autowired
+	protected ClientService clientManager;
 	
 	@Autowired
 	protected RestTemplate restTemplate;
@@ -41,6 +45,8 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 			order.setId(UUID.randomUUID().toString());
 		}
 		
+		String ucn = order.getCustomerUcn();
+		String url = clientManager.getUrl(ucn);
         HttpEntity<Case> request = new HttpEntity<>(order, headers);
         log.info("Placing order to {} with Request {}...", url, request.toString());
         return restTemplate.exchange(url, HttpMethod.POST, request, Case.class);
