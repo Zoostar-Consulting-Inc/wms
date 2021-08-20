@@ -21,7 +21,8 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 	void testRetrieveUserByUserId() throws Exception {
 		//GIVEN
 		var url = "/user/retrieve";
-		var expected = entities.get(0);
+		var entity = repository.entrySet().stream().findFirst();
+		var expected = entity.get().getValue();
 		var request = new UserSearchRequest(expected.getUserId());
 		
 		//MOCK
@@ -46,7 +47,7 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 		assertEquals(0, expected.compareTo(actual));
 		assertNotNull(actual.toString());
 		
-		var unexpected = entities.get(1);
+		var unexpected = repository.values().stream().findAny().get();
 		unexpected.setSource("xyz");
 		assertNotEquals(unexpected, actual);
 	}
@@ -55,7 +56,7 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 	void testNoSuchElementException() throws Exception {
 		//GIVEN
 		var url = "/user/retrieve";
-		var expected = entities.get(0);
+		var expected = repository.values().stream().findFirst().get();
 		var request = new UserSearchRequest(expected.getUserId());
 		
 		//MOCK

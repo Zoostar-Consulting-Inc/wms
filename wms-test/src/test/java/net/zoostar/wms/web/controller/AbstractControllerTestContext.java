@@ -19,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import net.zoostar.wms.dao.ClientDetailsRepository;
 import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
@@ -46,6 +47,9 @@ public abstract class AbstractControllerTestContext {
 	
 	@MockBean
 	protected ClientRepository clientRepository;
+	
+	@MockBean
+	protected ClientDetailsRepository clientDetailsRepository;
 	
 	@MockBean
 	protected RestTemplate restTemplate;

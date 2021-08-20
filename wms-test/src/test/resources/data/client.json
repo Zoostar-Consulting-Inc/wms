@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "code": "UTS",
+    "name": "United Terminal Service",
+    "baseUrl": "localhost:1080",
+    "details": [
+      {
+        "ucn": "00011080",
+        "name": "Branch One"
+      },
+      {
+        "ucn": "00012080",
+        "name": "Branch Two"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "code": "PEDEX",
+    "name": "Provincial Express",
+    "baseUrl": "localhost:2080",
+    "details": [
+      {
+        "ucn": "00021080",
+        "name": "Branch One"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "code": "SF",
+    "name": "Starforce",
+    "baseUrl": "localhost:3080",
+    "details": [
+      {
+        "ucn": "00031080",
+        "name": "Branch One"
+      }
+    ]
+  }
+]

@@ -1,6 +1,9 @@
 package net.zoostar.wms.web.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +25,11 @@ public class OrderController {
 	private OrderService orderManager;
 	
 	@PostMapping(value = "/submit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Case> order(@RequestBody Case order) {
+	public ResponseEntity<List<ResponseEntity<Case>>> order(@RequestBody Case order) {
 		log.info("Case order request received: {}", order);
-		var response = orderManager.order(order);
-		log.info("Case order submitted successfully: {}", response.getBody());
-		return response;
+		var responses = orderManager.order(order);
+		log.info("Returning {} response(s).", responses.size());
+		return new ResponseEntity<>(responses, HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

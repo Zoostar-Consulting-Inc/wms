@@ -22,18 +22,17 @@ import net.zoostar.wms.web.request.CustomerSearchRequest;
 
 class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 
-	
 	@Test
 	void testFindByEmail() throws Exception {
 		//GIVEN
-		var entity = entities.stream().findFirst();
-		var expected = entity.get();
+		var entity = repository.entrySet().stream().findFirst();
+		var expected = entity.get().getValue();
 		String email = expected.getEmail();
 		String url = "/customer/retrieve/" + email;
 
 		//MOCK
 		when(customerRepository.findByEmail(email)).
-				thenReturn(entity);
+				thenReturn(Optional.of(expected));
 		
 		//WHEN
 	    var result = mockMvc.perform(get(url).
@@ -81,6 +80,7 @@ class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 	@Test
 	void testSearchEmail() throws Exception {
 		//GIVEN
+		var entities = repository.values();
 		var expected = entities.stream().findFirst().get();
 		String email = expected.getEmail();
 		

@@ -1,5 +1,7 @@
 package net.zoostar.wms.service;
 
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
@@ -10,7 +12,7 @@ public interface OrderService {
 
 	HttpHeaders getHeaders();
 	
-	ResponseEntity<Case> order(Case order);
+	List<ResponseEntity<Case>> order(Case order);
 
 	ResponseEntity<OrderUpdate> update(OrderUpdate update);
 

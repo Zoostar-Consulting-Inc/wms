@@ -1,5 +1,10 @@
 package net.zoostar.wms.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,8 +24,11 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
+import net.zoostar.wms.model.Inventory;
 import net.zoostar.wms.model.OrderUpdate;
+import net.zoostar.wms.model.SplitOrder;
 import net.zoostar.wms.service.ClientService;
+import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.OrderService;
 
 @Slf4j
@@ -35,24 +43,48 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	protected ClientService clientManager;
 	
 	@Autowired
+	protected InventoryService inventoryManager;
+	
+	@Autowired
 	protected RestTemplate restTemplate;
 	
 	@Getter
 	protected HttpHeaders headers;
 	
 	@Override
-	public ResponseEntity<Case> order(Case order) {
+	public List<ResponseEntity<Case>> order(Case order) {
+		var responses = new ArrayList<ResponseEntity<Case>>();
 		if(StringUtils.isBlank(order.getId())) {
 			order.setId(UUID.randomUUID().toString());
 		}
 		
-		String ucn = order.getCustomerUcn();
-		Client client = clientManager.retrieve(ucn);
         HttpEntity<Case> request = new HttpEntity<>(order, headers);
-        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
-        return restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
+		SplitOrder splitOrder = createSplitOrder(order);
+		for(Client client : splitOrder.getClients().keySet()) {
+	        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
+	        var response = restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
+	        log.info("Response received: {}", response);
+	        responses.add(response);
+		}
+		return responses;
 	}
 
+	protected SplitOrder createSplitOrder(Case order) {
+		SplitOrder splitOrder = new SplitOrder(order);
+		var clients = new HashMap<Client, Set<String>>();
+		for(String assetId : order.getAssetIds()) {
+			Inventory inventory = inventoryManager.retrieveByAssetId(assetId);
+			Client client = clientManager.retrieveByUcn(inventory.getAssetId());
+			var assetIds = clients.get(client);
+			if(assetIds == null) {
+				assetIds = new HashSet<>();
+				clients.put(client, assetIds);
+			}
+			assetIds.add(assetId);
+		}
+		return splitOrder;
+	}
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		initHttpHeaders();

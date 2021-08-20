@@ -25,14 +25,14 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 	@Test
 	void testFindByAssetId() throws Exception {
 		//GIVEN
-		var entity = entities.stream().findFirst();
-		var expected = entity.get();
+		var entity = repository.entrySet().stream().findFirst();
+		var expected = entity.get().getValue();
 		String assetId = expected.getAssetId();
 		String url = "/inventory/retrieve/" + assetId;
 
 		//MOCK
 		when(inventoryRepository.findByAssetId(assetId)).
-				thenReturn(entity);
+				thenReturn(Optional.of(expected));
 		
 		//WHEN
 	    var result = mockMvc.perform(get(url).
@@ -82,12 +82,12 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 	@Test
 	void testSearchAssetId() throws Exception {
 		//GIVEN
-		var expected = entities.stream().findFirst().get();
-		String assetId = expected.getAssetId();
+		var expected = repository.entrySet().stream().findFirst().get();
+		String assetId = expected.getKey();
 		
 		int size = 3;
 		Set<Inventory> expectedEntities = new HashSet<>(size);
-		entities.stream().filter(entity -> entity.getAssetId().startsWith("FE1")).
+		repository.values().stream().filter(entity -> entity.getAssetId().startsWith("FE1")).
 		forEach(entity -> expectedEntities.add(entity));
 
 		String url = "/inventory/search";
@@ -97,7 +97,7 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 
 		//MOCK
 		when(inventoryRepository.findByAssetId(assetId)).
-				thenReturn(Optional.of(expected));
+				thenReturn(Optional.of(expected.getValue()));
 		when(inventoryRepository.findByAssetIdStartsWith("FE1")).
 				thenReturn(expectedEntities);
 		

@@ -1,79 +1,79 @@
-[
-  {
-  	"id": "1",
+{
+  "peter@spuh.org": {
+    "id": "1",
     "email": "peter@spuh.org",
     "name": "St. Peters University Hospital",
     "locationId": "01386585",
     "source": "default"
   },
-  {
-  	"id": "2",
+  "user2@email.com": {
+    "id": "2",
     "email": "user2@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123457",
     "source": "default"
   },
-  {
-  	"id": "3",
+  "user3email.com": {
+    "id": "3",
     "email": "user3@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123458",
     "source": "default"
   },
-  {
-  	"id": "4",
+  "user4@email.com": {
+    "id": "4",
     "email": "user4@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123459",
     "source": "default"
   },
-  {
-  	"id": "5",
+  "user5@email.com": {
+    "id": "5",
     "email": "user5@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123450",
     "source": "default"
   },
-  {
-  	"id": "6",
+  "user6@email.com": {
+    "id": "6",
     "email": "user6@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123460",
     "source": "default"
   },
-  {
-  	"id": "7",
+  "user7@email.com": {
+    "id": "7",
     "email": "user7@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123461",
     "source": "default"
   },
-  {
-  	"id": "8",
+  "user8@email.com": {
+    "id": "8",
     "email": "user8@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123462",
     "source": "default"
   },
-  {
-  	"id": "9",
+  "user9@email.com": {
+    "id": "9",
     "email": "user9@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123463",
     "source": "default"
   },
-  {
-  	"id": "10",
+  "user10@email.com": {
+    "id": "10",
     "email": "user10@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123464",
     "source": "default"
   },
-  {
-  	"id": "11",
+  "user11@email.com": {
+    "id": "11",
     "email": "user11@email.com",
     "name": "St. Peters University Hospital",
     "locationId": "0123465",
     "source": "default"
   }
-]
+}
