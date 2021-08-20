@@ -11,7 +11,7 @@ import net.zoostar.wms.model.AbstractStringPersistable;
 @Getter
 @Component
 public class EntityRepository<T extends AbstractStringPersistable> {
-
+	
 	private final Map<Class<T>, Map<String, T>> repositories = new HashMap<>();
 	
 }
