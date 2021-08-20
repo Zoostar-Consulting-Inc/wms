@@ -1,10 +1,8 @@
 package net.zoostar.wms.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,8 +43,8 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	@Autowired
 	protected InventoryService inventoryManager;
 	
-	@Autowired
-	protected RestTemplate restTemplate;
+	@Getter
+	protected RestTemplate orderServer = new RestTemplate();
 	
 	@Getter
 	protected HttpHeaders headers;
@@ -62,7 +60,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		SplitOrder splitOrder = createSplitOrder(order);
 		for(Client client : splitOrder.getClients().keySet()) {
 	        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
-	        var response = restTemplate.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
+	        var response = orderServer.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
 	        log.info("Response received: {}", response);
 	        responses.add(response);
 		}
@@ -71,10 +69,10 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 
 	protected SplitOrder createSplitOrder(Case order) {
 		SplitOrder splitOrder = new SplitOrder(order);
-		var clients = new HashMap<Client, Set<String>>();
+		var clients = splitOrder.getClients();
 		for(String assetId : order.getAssetIds()) {
 			Inventory inventory = inventoryManager.retrieveByAssetId(assetId);
-			Client client = clientManager.retrieveByUcn(inventory.getAssetId());
+			Client client = clientManager.retrieveByUcn(inventory.getHomeUcn());
 			var assetIds = clients.get(client);
 			if(assetIds == null) {
 				assetIds = new HashSet<>();
@@ -106,7 +104,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		
         HttpEntity<OrderUpdate> request = new HttpEntity<>(update, headers);
         log.info("Updating order status to {} with Request {}...", url, request.toString());
-        return restTemplate.exchange(url, HttpMethod.POST, request, OrderUpdate.class);
+        return orderServer.exchange(url, HttpMethod.POST, request, OrderUpdate.class);
 	}
 
 }

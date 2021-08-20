@@ -1,5 +1,5 @@
-[
-  {
+{
+  "UTS": {
     "id": "1",
     "code": "UTS",
     "name": "United Terminal Service",
@@ -15,7 +15,7 @@
       }
     ]
   },
-  {
+  "PEDEX": {
     "id": "2",
     "code": "PEDEX",
     "name": "Provincial Express",
@@ -27,7 +27,7 @@
       }
     ]
   },
-  {
+  "SF": {
     "id": "3",
     "code": "SF",
     "name": "Starforce",
@@ -39,4 +39,4 @@
       }
     ]
   }
-]
+}
