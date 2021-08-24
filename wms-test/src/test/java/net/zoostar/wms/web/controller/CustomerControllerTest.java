@@ -14,18 +14,24 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.service.Repositories;
 import net.zoostar.wms.web.request.CustomerSearchRequest;
 
-class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
+class CustomerControllerTest extends AbstractControllerTestContext {
+	
+	@Autowired
+	protected Repositories<Customer> repositories;
 
 	@Test
 	void testFindByEmail() throws Exception {
 		//GIVEN
-		var entity = repository.entrySet().stream().findFirst();
+		var entity = repositories.getRepository(Customer.class).
+				entrySet().stream().findFirst();
 		var expected = entity.get().getValue();
 		String email = expected.getEmail();
 		String url = "/customer/retrieve/" + email;
@@ -80,14 +86,14 @@ class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 	@Test
 	void testSearchEmail() throws Exception {
 		//GIVEN
-		var entities = repository.values();
+		var entities = repositories.getRepository(Customer.class).entrySet();
 		var expected = entities.stream().findFirst().get();
-		String email = expected.getEmail();
+		String email = expected.getValue().getEmail();
 		
 		int size = 2;
 		Set<Customer> expectedEntities = new HashSet<>(size);
-		entities.stream().filter(entity -> entity.getEmail().startsWith("user1")).
-				forEach(entity -> expectedEntities.add(entity));
+		entities.stream().filter(entity -> entity.getValue().getEmail().startsWith("user1")).
+				forEach(entity -> expectedEntities.add(entity.getValue()));
 
 		String url = "/customer/search";
 		var request = new CustomerSearchRequest();
@@ -96,7 +102,7 @@ class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 
 		//MOCK
 		when(customerRepository.findByEmail(email)).
-				thenReturn(Optional.of(expected));
+				thenReturn(Optional.of(expected.getValue()));
 		when(customerRepository.findByEmailStartsWith("user1")).
 				thenReturn(expectedEntities);
 		
@@ -136,16 +142,6 @@ class CustomerControllerTest extends AbstractMockBeanTestContext<Customer> {
 		//THEN
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		
-	}
-
-	@Override
-	protected String getPath() {
-		return "data/customer.json";
-	}
-
-	@Override
-	protected Class<Customer> getClazz() {
-		return Customer.class;
 	}
 
 }

@@ -14,18 +14,23 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.Inventory;
+import net.zoostar.wms.service.Repositories;
 import net.zoostar.wms.web.request.InventorySearchRequest;
 
-class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
+class InventoryControllerTest extends AbstractControllerTestContext {
+	
+	@Autowired
+	protected Repositories<Inventory> repositories;
 
 	@Test
 	void testFindByAssetId() throws Exception {
 		//GIVEN
-		var entity = repository.entrySet().stream().findFirst();
+		var entity = repositories.getRepository(Inventory.class).entrySet().stream().findFirst();
 		var expected = entity.get().getValue();
 		String assetId = expected.getAssetId();
 		String url = "/inventory/retrieve/" + assetId;
@@ -82,12 +87,12 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 	@Test
 	void testSearchAssetId() throws Exception {
 		//GIVEN
-		var expected = repository.entrySet().stream().findFirst().get();
+		var expected = repositories.getRepository(Inventory.class).entrySet().stream().findFirst().get();
 		String assetId = expected.getKey();
 		
 		int size = 3;
 		Set<Inventory> expectedEntities = new HashSet<>(size);
-		repository.values().stream().filter(entity -> entity.getAssetId().startsWith("FE1")).
+		repositories.getRepository(Inventory.class).values().stream().filter(entity -> entity.getAssetId().startsWith("FE1")).
 		forEach(entity -> expectedEntities.add(entity));
 
 		String url = "/inventory/search";
@@ -117,7 +122,7 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 				mapper.getTypeFactory().constructCollectionType(Set.class, Inventory.class));
 		assertNotNull(results);
 		log.info("Result: {}", results);
-		assertEquals(4, results.size());
+		assertEquals(3, results.size());
 	}
 
 	@Test
@@ -137,16 +142,6 @@ class InventoryControllerTest extends AbstractMockBeanTestContext<Inventory> {
 		//THEN
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		
-	}
-
-	@Override
-	protected Class<Inventory> getClazz() {
-		return Inventory.class;
-	}
-
-	@Override
-	protected String getPath() {
-		return "data/inventory.json";
 	}
 
 }

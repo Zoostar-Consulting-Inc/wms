@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
-import net.zoostar.wms.model.OrderUpdate;
 import net.zoostar.wms.service.OrderService;
 
 @Slf4j
@@ -31,12 +30,5 @@ public class OrderController {
 		log.info("Returning {} response(s).", responses.size());
 		return new ResponseEntity<>(responses, HttpStatus.OK);
 	}
-	
-	@PostMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<OrderUpdate> update(@RequestBody OrderUpdate update) {
-		log.info("Case order update received: {}", update);
-		var response = orderManager.update(update);
-		log.info("Case order updated successfully: {}", response.getBody());
-		return response;
-	}
+
 }

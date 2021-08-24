@@ -28,8 +28,23 @@
 		p:suffix=".jsp"
 	/>
 	
+	<bean id="mapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	
+	<bean id="orderServer" class="org.springframework.web.client.RestTemplate" />
+	
 	<beans profile="test">
 		<context:property-placeholder location="classpath:app.properties, classpath:test/env.properties" />
+		
+		<bean id="repositories" class="net.zoostar.wms.service.impl.RepositoriesImpl">
+			<property name="entityTypes">
+				<set value-type="java.lang.Class">
+					<value>net.zoostar.wms.model.Client</value>
+					<value>net.zoostar.wms.model.Customer</value>
+					<value>net.zoostar.wms.model.Inventory</value>
+					<value>net.zoostar.wms.model.User</value>
+				</set>
+			</property>
+		</bean>
 	</beans>
 	
 </beans>

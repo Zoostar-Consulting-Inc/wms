@@ -9,12 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import net.zoostar.wms.dao.ClientDetailsRepository;
 import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.model.Client;
+import net.zoostar.wms.model.Inventory;
 import net.zoostar.wms.service.ClientService;
+import net.zoostar.wms.service.InventoryService;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class ClientServiceImpl implements ClientService {
 
+	@Autowired
+	protected InventoryService inventoryManager;
+	
 	@Autowired
 	protected ClientRepository clientRepository;
 	
@@ -29,6 +34,12 @@ public class ClientServiceImpl implements ClientService {
 		}
 		var clientDetails = entity.get();
 		return clientDetails.getClient();
+	}
+
+	@Override
+	public Client retrieveByAssetId(String assetId) {
+		Inventory inventory = inventoryManager.retrieveByAssetId(assetId);
+		return retrieveByUcn(inventory.getHomeUcn());
 	}
 
 }

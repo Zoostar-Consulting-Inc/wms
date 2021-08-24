@@ -1,18 +1,18 @@
 {
-  "FE28888": {
+  "FE18888": {
   	"id": "1",
-  	"assetId" : "FE28888",
-    "sku": "sku2",
+  	"assetId" : "FE18888",
+    "sku": "sku1",
     "quantity": 5,
     "homeUcn": "00011080",
     "currentUcn": "00011080",
     "new": "false",
     "source": "source1"
   },
-  "FE18888": {
+  "FE28888": {
   	"id": "2",
-  	"assetId" : "FE18888",
-    "sku": "sku1",
+  	"assetId" : "FE28888",
+    "sku": "sku2",
     "quantity": 5,
     "homeUcn": "00011080",
     "currentUcn": "00011080",

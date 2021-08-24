@@ -29,12 +29,13 @@ import net.zoostar.wms.dao.UserRepository;
 @ActiveProfiles({"test"})
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-web.xml"})
+@ContextConfiguration(locations = {"classpath:META-INF/applicationContext-test.xml"})
 public abstract class AbstractControllerTestContext {
 	
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
-	protected final ObjectMapper mapper = new ObjectMapper();
+	@Autowired
+	protected ObjectMapper mapper;
 	
 	@MockBean
 	protected CustomerRepository customerRepository;
@@ -52,7 +53,7 @@ public abstract class AbstractControllerTestContext {
 	protected ClientDetailsRepository clientDetailsRepository;
 	
 	@MockBean
-	protected RestTemplate restTemplate;
+	protected RestTemplate orderServer;
 	
 	@Autowired
 	protected WebApplicationContext wac;
