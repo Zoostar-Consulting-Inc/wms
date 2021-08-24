@@ -9,24 +9,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.User;
+import net.zoostar.wms.service.Repositories;
 import net.zoostar.wms.web.request.UserSearchRequest;
 
-class UserControllerTest extends AbstractMockBeanTestContext<User> {
-
+class UserControllerTest extends AbstractControllerTestContext {
+	
+	@Autowired
+	protected Repositories<User> repositories;
+	
 	@Test
 	void testRetrieveUserByUserId() throws Exception {
 		//GIVEN
 		var url = "/user/retrieve";
-		var entity = repository.entrySet().stream().findFirst();
+		var entity = repositories.getRepository(User.class).
+				entrySet().stream().findFirst();
 		var expected = entity.get().getValue();
-		var request = new UserSearchRequest(expected.getUserId());
+		String userId = expected.getId();
+		var request = new UserSearchRequest(userId);
 		
 		//MOCK
-		when(userRepository.findByUserId(expected.getUserId())).
+		when(userRepository.findByUserId(userId)).
 			thenReturn(Optional.of(expected));
 		
 		//WHEN
@@ -47,7 +54,8 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 		assertEquals(0, expected.compareTo(actual));
 		assertNotNull(actual.toString());
 		
-		var unexpected = repository.values().stream().findAny().get();
+		var unexpected = repositories.getRepository(User.class).
+				entrySet().stream().findAny().get().getValue();
 		unexpected.setSource("xyz");
 		assertNotEquals(unexpected, actual);
 	}
@@ -56,8 +64,11 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 	void testNoSuchElementException() throws Exception {
 		//GIVEN
 		var url = "/user/retrieve";
-		var expected = repository.values().stream().findFirst().get();
-		var request = new UserSearchRequest(expected.getUserId());
+		var entity = repositories.getRepository(User.class).
+				entrySet().stream().findFirst();
+		var expected = entity.get().getValue();
+		String userId = expected.getId();
+		var request = new UserSearchRequest(userId);
 		
 		//MOCK
 		when(userRepository.findByUserId(expected.getUserId())).
@@ -74,16 +85,6 @@ class UserControllerTest extends AbstractMockBeanTestContext<User> {
 		log.info("Result: {}", result);
 		var response = result.getResponse();
 		assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-	}
-	
-	@Override
-	protected String getPath() {
-		return "data/user.json";
-	}
-
-	@Override
-	protected Class<User> getClazz() {
-		return User.class;
 	}
 
 }

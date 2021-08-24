@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Case extends AbstractStringPersistable {
+public class Case {
 
 	private String caseId;
 	

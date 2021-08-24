@@ -22,11 +22,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
-import net.zoostar.wms.model.Inventory;
 import net.zoostar.wms.model.OrderUpdate;
 import net.zoostar.wms.model.SplitOrder;
 import net.zoostar.wms.service.ClientService;
-import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.OrderService;
 
 @Slf4j
@@ -40,9 +38,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	@Autowired
 	protected ClientService clientManager;
 	
-	@Autowired
-	protected InventoryService inventoryManager;
-	
 	@Getter
 	protected RestTemplate orderServer = new RestTemplate();
 	
@@ -52,12 +47,8 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	@Override
 	public List<ResponseEntity<Case>> order(Case order) {
 		var responses = new ArrayList<ResponseEntity<Case>>();
-		if(StringUtils.isBlank(order.getId())) {
-			order.setId(UUID.randomUUID().toString());
-		}
-		
         HttpEntity<Case> request = new HttpEntity<>(order, headers);
-		SplitOrder splitOrder = createSplitOrder(order);
+        SplitOrder splitOrder = createSplitOrder(order);
 		for(Client client : splitOrder.getClients().keySet()) {
 	        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
 	        var response = orderServer.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
@@ -71,8 +62,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		SplitOrder splitOrder = new SplitOrder(order);
 		var clients = splitOrder.getClients();
 		for(String assetId : order.getAssetIds()) {
-			Inventory inventory = inventoryManager.retrieveByAssetId(assetId);
-			Client client = clientManager.retrieveByUcn(inventory.getHomeUcn());
+			Client client = clientManager.retrieveByAssetId(assetId);
 			var assetIds = clients.get(client);
 			if(assetIds == null) {
 				assetIds = new HashSet<>();
