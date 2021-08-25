@@ -18,25 +18,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
-@ToString
 public class Client implements Comparable<Client>, Persistable<String> {
-	
+
 	@Id
 	@Column(name = "client_id", length = 50)
 	@GeneratedValue(generator="uuid")
 	@GenericGenerator(name="uuid", strategy="uuid2")
 	private String id;
-
-	@JsonIgnore
-	@Override
-	public boolean isNew() {
-		return StringUtils.isBlank(id);
-	}
 
 	private String code;
 	
@@ -46,6 +38,12 @@ public class Client implements Comparable<Client>, Persistable<String> {
 
 	@OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
 	private Set<ClientDetail> details;
+
+	@JsonIgnore
+	@Override
+	public boolean isNew() {
+		return StringUtils.isBlank(id);
+	}
 	
 	@Override
 	public int hashCode() {
@@ -67,6 +65,15 @@ public class Client implements Comparable<Client>, Persistable<String> {
 	@Override
 	public int compareTo(Client that) {
 		return this.code.compareTo(that.getCode());
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Client [id=").append(id).append(", code=").append(code).append(", name=").append(name)
+				.append(", baseUrl=").append(baseUrl).append(", details=")
+				.append(details != null ? details.size() : 0).append("]");
+		return builder.toString();
 	}
 
 }

@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
-import net.zoostar.wms.service.OrderService;
+import net.zoostar.wms.service.CaseService;
+import net.zoostar.wms.web.response.OrderSubmitResponse;
 
 @Slf4j
 @RestController
@@ -21,10 +22,10 @@ import net.zoostar.wms.service.OrderService;
 public class OrderController {
 
 	@Autowired
-	private OrderService orderManager;
+	private CaseService orderManager;
 	
 	@PostMapping(value = "/submit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<ResponseEntity<Case>>> order(@RequestBody Case order) {
+	public ResponseEntity<List<OrderSubmitResponse>> order(@RequestBody Case order) {
 		log.info("Case order request received: {}", order);
 		var responses = orderManager.order(order);
 		log.info("Returning {} response(s).", responses.size());

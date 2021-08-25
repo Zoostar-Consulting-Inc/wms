@@ -9,24 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
-import net.zoostar.wms.model.SplitOrder;
+import net.zoostar.wms.model.Order;
+import net.zoostar.wms.service.CaseService;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.OrderService;
+import net.zoostar.wms.web.response.OrderSubmitResponse;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class OrderServiceImpl implements OrderService, InitializingBean {
+public class CaseServiceImpl implements CaseService, InitializingBean {
 
 	@Value("${order.update.url:localhost}")
 	protected String url;
@@ -35,34 +34,33 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	protected ClientService clientManager;
 	
 	@Autowired
-	protected RestTemplate orderServer;
+	protected OrderService orderManager;
 	
 	protected HttpHeaders headers;
 	
 	@Override
-	public List<ResponseEntity<Case>> order(Case order) {
-		var responses = new ArrayList<ResponseEntity<Case>>();
-        HttpEntity<Case> request = new HttpEntity<>(order, headers);
-        SplitOrder splitOrder = createSplitOrder(order);
-		for(Client client : splitOrder.getClients().keySet()) {
-	        log.info("Placing order to {} with Request {}...", client.getBaseUrl(), request.toString());
-	        var response = orderServer.exchange(client.getBaseUrl(), HttpMethod.POST, request, Case.class);
-	        log.info("Response received: {}", response);
-	        responses.add(response);
+	public List<OrderSubmitResponse> order(Case order) {
+        Order splitOrder = splitOrder(order);
+		var responses = new ArrayList<OrderSubmitResponse>(splitOrder.getUrls().size());
+        HttpEntity<Order> request = new HttpEntity<>(splitOrder, headers);
+		for(String url : splitOrder.getUrls().keySet()) {
+	        log.info("Placing order: {}...", request.toString());
+	        responses.add(orderManager.submit(url, request));
 		}
 		return responses;
 	}
 
-	protected SplitOrder createSplitOrder(Case order) {
+	@Override
+	public Order splitOrder(Case order) {
 		log.info("{}", "Splitting order per unique client...");
-		SplitOrder splitOrder = new SplitOrder(order);
-		var clients = splitOrder.getClients();
+		Order splitOrder = new Order(order);
+		var urls = splitOrder.getUrls();
 		for(String assetId : order.getAssetIds()) {
 			Client client = clientManager.retrieveByAssetId(assetId);
-			var assetIds = clients.get(client);
+			var assetIds = urls.get(client.getBaseUrl());
 			if(assetIds == null) {
 				assetIds = new HashSet<>();
-				clients.put(client, assetIds);
+				urls.put(client.getBaseUrl(), assetIds);
 			}
 			assetIds.add(assetId);
 		}
@@ -80,6 +78,11 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
         log.info("HttpHeaders initialized: {}.", headers);
+	}
+
+	@Override
+	public HttpHeaders getHeaders() {
+		return headers;
 	}
 
 }

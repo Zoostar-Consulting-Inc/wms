@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class SplitOrder extends AbstractStringPersistable {
+public class Order {
 
 	private String caseId;
 	
@@ -24,16 +24,16 @@ public class SplitOrder extends AbstractStringPersistable {
 	
 	private String userId;
 	
-	private Map<Client, Set<String>> clients;
+	private Map<String, Set<String>> urls;
 
-	public SplitOrder(Case order) {
+	public Order(Case order) {
 		this.caseId = order.getCaseId();
 		this.caseDate = order.getCaseDate();
 		this.customerUcn = order.getCustomerUcn();
 		this.userId = order.getUserId();
-		this.clients = new HashMap<>();
+		this.urls = new HashMap<>();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(caseId);
@@ -44,10 +44,11 @@ public class SplitOrder extends AbstractStringPersistable {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof SplitOrder)) {
+		if (!(obj instanceof Order)) {
 			return false;
 		}
-		SplitOrder other = (SplitOrder) obj;
+		Order other = (Order) obj;
 		return Objects.equals(caseId, other.caseId);
 	}
+
 }

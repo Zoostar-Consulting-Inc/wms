@@ -1,6 +1,5 @@
 package net.zoostar.wms.model;
 
-import java.util.Objects;
 import java.util.Set;
 
 import lombok.Getter;
@@ -22,20 +21,4 @@ public class Case {
 	
 	private Set<String> assetIds;
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(caseId);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Case)) {
-			return false;
-		}
-		Case other = (Case) obj;
-		return Objects.equals(caseId, other.caseId);
-	}
 }

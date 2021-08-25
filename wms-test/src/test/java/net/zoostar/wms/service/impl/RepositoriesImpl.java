@@ -1,5 +1,6 @@
 package net.zoostar.wms.service.impl;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Setter;
@@ -35,13 +38,17 @@ public class RepositoriesImpl<T extends AbstractStringPersistable> implements Re
 	
 	@Override
 	public  Map<String, T> getRepository(Class<T> clazz) {
-		Map<String, T> records = repositories.get(clazz);
-		log.info("Found {} records for class: {}", records.size(), clazz);
-		return records;
+		Map<String, T> repository = repositories.get(clazz);
+		log.info("Found {} records in repository: {}", repository.size(), clazz);
+		return repository;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		loadRepositoryData();
+	}
+
+	private void loadRepositoryData() throws JsonParseException, JsonMappingException, IOException {
 		var dir = new ClassPathResource(path);
 		log.info("Loading mock json entity data files from: {}", dir);
 		for(Class<T> entityType: entityTypes) {

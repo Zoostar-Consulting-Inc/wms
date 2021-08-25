@@ -1,5 +1,6 @@
 package net.zoostar.wms.web.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +11,8 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -20,9 +23,11 @@ import net.zoostar.wms.model.ClientDetail;
 import net.zoostar.wms.model.Customer;
 import net.zoostar.wms.model.Inventory;
 import net.zoostar.wms.model.User;
+import net.zoostar.wms.service.CaseService;
 import net.zoostar.wms.service.Repositories;
+import net.zoostar.wms.web.response.OrderSubmitResponse;
 
-public class OrderControllerTest extends AbstractControllerTestContext {
+class OrderControllerTest extends AbstractControllerTestContext {
 
 	@Autowired
 	private Repositories<Inventory> inventories;
@@ -36,17 +41,20 @@ public class OrderControllerTest extends AbstractControllerTestContext {
 	@Autowired
 	private Repositories<Client> clients;
 	
+	@Autowired
+	private CaseService caseManager;
+	
 	@Test
 	void testOrderSubmitSuccess() throws Exception {
 		//GIVEN
+		var url = "/order/submit";
 		var inventory = inventories.getRepository(Inventory.class).entrySet().stream().findFirst().get().getValue();
 		var customer = customers.getRepository(Customer.class).entrySet().stream().findFirst().get().getValue();
 		var user = users.getRepository(User.class).entrySet().stream().findFirst().get().getValue();
-		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
-		var request = caseRequest(inventory, customer, user);
-		var url = "/order/submit";
+		var inboundRequest = caseRequest(inventory, customer, user);
 		
 		//MOCK
+		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
 		var clientDetails = client.getDetails();
 		for(ClientDetail detail : clientDetails) {
 			detail.setClient(client);
@@ -57,11 +65,18 @@ public class OrderControllerTest extends AbstractControllerTestContext {
 		
 		when(clientDetailsRepository.findByUcn(inventory.getHomeUcn())).
 				thenReturn(clientDetails.stream().findFirst());
+
+		var order = caseManager.splitOrder(inboundRequest);
+		var outboundRequest = new HttpEntity<>(order, caseManager.getHeaders());
+		for(String clientUrl : order.getUrls().keySet()) {
+			when(orderManager.submit(clientUrl, outboundRequest)).
+					thenReturn(new OrderSubmitResponse(order, HttpStatus.OK));
+		}
 		
 		//WHEN
 	    var result = mockMvc.perform(post(url).
 	    		contentType(MediaType.APPLICATION_JSON_VALUE).
-	    		content(mapper.writeValueAsString(request)).
+	    		content(mapper.writeValueAsString(inboundRequest)).
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
 	    		andReturn();
 	    
@@ -69,10 +84,16 @@ public class OrderControllerTest extends AbstractControllerTestContext {
 	    assertNotNull(result);
 	    var response = result.getResponse();
 	    assertNotNull(response);
-		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, Case.class);
-		var actual = mapper.readValue(response.getContentAsString(), javaType);
+	    assertEquals(HttpStatus.OK.value(), response.getStatus());
+		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, OrderSubmitResponse.class);
+		List<OrderSubmitResponse> actual = mapper.readValue(response.getContentAsString(), javaType);
 		assertNotNull(actual);
-		log.info("Actual: {}", actual.toString());
+		assertEquals(1, actual.size());
+		for(OrderSubmitResponse entity : actual) {
+			log.info("Order Submit Response: {}", entity);
+			assertEquals(HttpStatus.OK, entity.getStatus());
+			assertEquals(order, entity.getOrder());
+		}
 	}
 	
 	protected Case caseRequest(Inventory inventory,
@@ -83,7 +104,7 @@ public class OrderControllerTest extends AbstractControllerTestContext {
 		request.setCustomerUcn(customer.getLocationId());
 		request.setUserId(user.getUserId());
 		var assetIds = new TreeSet<String>();
-		assetIds.add("FE18888");
+		assetIds.add(inventory.getAssetId());
 		request.setAssetIds(assetIds);
 		return request;
 	}
