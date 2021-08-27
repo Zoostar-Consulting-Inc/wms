@@ -41,12 +41,6 @@ public class Order {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Order)) {
-			return false;
-		}
 		Order other = (Order) obj;
 		return Objects.equals(caseId, other.caseId);
 	}

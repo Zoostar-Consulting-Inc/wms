@@ -1,6 +1,7 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -55,8 +56,10 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		
 		//MOCK
 		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
+		log.info("Retrieved mocking client: {}", client);
 		var clientDetails = client.getDetails();
 		for(ClientDetail detail : clientDetails) {
+			log.info("Setting mock client detail with client: {}", detail);
 			detail.setClient(client);
 		}
 		
@@ -93,7 +96,10 @@ class OrderControllerTest extends AbstractControllerTestContext {
 			log.info("Order Submit Response: {}", entity);
 			assertEquals(HttpStatus.OK, entity.getStatus());
 			assertEquals(order, entity.getOrder());
+			assertEquals(order.hashCode(), entity.getOrder().hashCode());
 		}
+		
+		assertFalse(client.isNew());
 	}
 	
 	protected Case caseRequest(Inventory inventory,
