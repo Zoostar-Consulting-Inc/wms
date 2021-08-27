@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,9 +25,6 @@ import net.zoostar.wms.web.response.OrderSubmitResponse;
 @Service
 @Transactional(readOnly = true)
 public class CaseServiceImpl implements CaseService, InitializingBean {
-
-	@Value("${order.update.url:localhost}")
-	protected String url;
 
 	@Autowired
 	protected ClientService clientManager;
