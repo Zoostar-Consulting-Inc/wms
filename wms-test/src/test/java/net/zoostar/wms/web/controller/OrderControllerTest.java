@@ -2,10 +2,12 @@ package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
@@ -84,22 +86,40 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    		andReturn();
 	    
 	    //THEN
+	    assertNotEquals(order, null);
 	    assertNotNull(result);
 	    var response = result.getResponse();
 	    assertNotNull(response);
 	    assertEquals(HttpStatus.OK.value(), response.getStatus());
 		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, OrderSubmitResponse.class);
 		List<OrderSubmitResponse> actual = mapper.readValue(response.getContentAsString(), javaType);
-		assertNotNull(actual);
 		assertEquals(1, actual.size());
 		for(OrderSubmitResponse entity : actual) {
 			log.info("Order Submit Response: {}", entity);
+			assertNotEquals(entity, null);
 			assertEquals(HttpStatus.OK, entity.getStatus());
 			assertEquals(order, entity.getOrder());
 			assertEquals(order.hashCode(), entity.getOrder().hashCode());
 		}
 		
+		assertNotEquals(client, null);
 		assertFalse(client.isNew());
+		assertEquals("1", client.getId());
+		assertEquals("localhost:1080", client.getBaseUrl());
+		assertEquals("UTS", client.getCode());
+		assertEquals("United Terminal Service", client.getName());
+		Iterator<ClientDetail> it = client.getDetails().iterator();
+		ClientDetail detail = it.next();
+		assertNotEquals(detail, null);
+		assertEquals(client.getDetails().stream().findFirst().get(), detail);
+		assertEquals(client.getDetails().stream().findFirst().get().hashCode(), detail.hashCode());
+		assertEquals(0, client.getDetails().stream().findFirst().get().compareTo(detail));
+		assertEquals(client, detail.getClient());
+		assertEquals(client.hashCode(), detail.getClient().hashCode());
+		assertEquals(0, client.compareTo(detail.getClient()));
+		assertEquals("1", detail.getId());
+		assertEquals("Branch One", detail.getName());
+		assertEquals("00011080", detail.getUcn());
 	}
 	
 	protected Case caseRequest(Inventory inventory,

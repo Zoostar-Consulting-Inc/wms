@@ -41,8 +41,16 @@ public class Order {
 
 	@Override
 	public boolean equals(Object obj) {
-		Order other = (Order) obj;
-		return Objects.equals(caseId, other.caseId);
+		if (obj == null) {
+			return false;
+		}
+
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+
+		Order that = (Order) obj;
+		return Objects.equals(caseId, that.caseId);
 	}
 
 }

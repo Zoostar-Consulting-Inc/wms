@@ -52,14 +52,16 @@ public class Client implements Comparable<Client>, Persistable<String> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof Client)) {
+		if (obj == null) {
 			return false;
 		}
-		Client other = (Client) obj;
-		return Objects.equals(code, other.code);
+
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		Client that = (Client) obj;
+		return Objects.equals(code, that.code);
 	}
 
 	@Override

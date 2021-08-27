@@ -32,14 +32,14 @@ public class ClientDetail extends AbstractStringPersistable implements Comparabl
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof ClientDetail)) {
+		if (obj == null) {
 			return false;
 		}
-		ClientDetail other = (ClientDetail) obj;
-		return Objects.equals(client, other.client) && Objects.equals(ucn, other.ucn);
+		if (this.getClass() != obj.getClass()) {
+			return false;
+		}
+		ClientDetail that = (ClientDetail) obj;
+		return Objects.equals(client, that.client) && Objects.equals(ucn, that.ucn);
 	}
 
 	@Override
