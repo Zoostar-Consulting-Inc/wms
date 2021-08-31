@@ -36,6 +36,7 @@ jobs:
   push:
     branches:
       - master
+jobs:
   master-deploy:
     name: Deploy to Artifactory on push to master
     runs-on: ubuntu-latest
