@@ -35,7 +35,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>wms-web</artifactId>
+			<artifactId>wms-test</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>
