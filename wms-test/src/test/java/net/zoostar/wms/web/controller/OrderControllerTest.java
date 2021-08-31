@@ -1,48 +1,40 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Optional;
-import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import com.fasterxml.jackson.databind.JavaType;
+import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
 import net.zoostar.wms.model.ClientDetail;
-import net.zoostar.wms.model.Customer;
 import net.zoostar.wms.model.Inventory;
-import net.zoostar.wms.model.User;
+import net.zoostar.wms.model.Order;
 import net.zoostar.wms.service.CaseService;
-import net.zoostar.wms.service.Repositories;
-import net.zoostar.wms.web.response.OrderSubmitResponse;
+import net.zoostar.wms.service.TestDataRepositories;
+import net.zoostar.wms.web.response.ResponseEntityBean;
 
 class OrderControllerTest extends AbstractControllerTestContext {
 
 	@Autowired
-	private Repositories<Inventory> inventories;
-
-	@Autowired
-	private Repositories<Customer> customers;
-
-	@Autowired
-	private Repositories<User> users;
+	private TestDataRepositories<Inventory> inventories;
 	
 	@Autowired
-	private Repositories<Client> clients;
+	private TestDataRepositories<Client> clients;
+	
+	@Autowired
+	protected TestDataRepositories<Case> cases;
 	
 	@Autowired
 	private CaseService caseManager;
@@ -51,33 +43,41 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	void testOrderSubmitSuccess() throws Exception {
 		//GIVEN
 		var url = "/order/submit";
-		var inventory = inventories.getRepository(Inventory.class).entrySet().stream().findFirst().get().getValue();
-		var customer = customers.getRepository(Customer.class).entrySet().stream().findFirst().get().getValue();
-		var user = users.getRepository(User.class).entrySet().stream().findFirst().get().getValue();
-		var inboundRequest = caseRequest(inventory, customer, user);
 		
 		//MOCK
+		var testClientDetails = new HashMap<String, ClientDetail>();
 		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
 		log.info("Retrieved mocking client: {}", client);
 		var clientDetails = client.getDetails();
 		for(ClientDetail detail : clientDetails) {
 			log.info("Setting mock client detail with client: {}", detail);
 			detail.setClient(client);
+			testClientDetails.put(detail.getUcn(), detail);
 		}
 		
-		when(inventoryRepository.findByAssetId(inventory.getAssetId())).
-				thenReturn(Optional.of(inventory));
-		
-		when(clientDetailsRepository.findByUcn(inventory.getHomeUcn())).
-				thenReturn(clientDetails.stream().findFirst());
+		var caseEntry = cases.getRepository(Case.class).entrySet().stream().findFirst().get();
+		for(var assetId : caseEntry.getValue().getAssetIds()) {
+			var inventory = inventories.getRepository(Inventory.class).get(assetId);
+			
+			when(inventoryRepository.findByAssetId(assetId)).
+					thenReturn(Optional.of(inventory));
 
-		var order = caseManager.splitOrder(inboundRequest);
-		var outboundRequest = new HttpEntity<>(order, caseManager.getHeaders());
-		for(String clientUrl : order.getUrls().keySet()) {
-			when(orderManager.submit(clientUrl, outboundRequest)).
-					thenReturn(new OrderSubmitResponse(order, HttpStatus.OK));
+			when(clientDetailsRepository.findByUcn(inventory.getHomeUcn())).
+					thenReturn(Optional.of(testClientDetails.get(inventory.getHomeUcn())));
 		}
 		
+		var entity = cases.getRepository(Case.class).
+				entrySet().stream().findFirst();
+		var inboundRequest = entity.get().getValue();
+		var orders = caseManager.splitCase(inboundRequest);
+		
+		for(var order : orders) {
+			var response = new ResponseEntity<Order>(order, HttpStatus.OK);
+			when(orderSubmitManager.exchange(order.getUrl(),
+					HttpMethod.POST, caseManager.getHeaders(), order, Order.class)).
+						thenReturn(new ResponseEntityBean<>(response));
+		}
+
 		//WHEN
 	    var result = mockMvc.perform(post(url).
 	    		contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -86,52 +86,10 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    		andReturn();
 	    
 	    //THEN
-	    assertNotEquals(order, null);
+	    assertNotEquals(inboundRequest, null);
 	    assertNotNull(result);
 	    var response = result.getResponse();
 	    assertNotNull(response);
 	    assertEquals(HttpStatus.OK.value(), response.getStatus());
-		JavaType javaType = mapper.getTypeFactory().constructCollectionType(List.class, OrderSubmitResponse.class);
-		List<OrderSubmitResponse> actual = mapper.readValue(response.getContentAsString(), javaType);
-		assertEquals(1, actual.size());
-		for(OrderSubmitResponse entity : actual) {
-			log.info("Order Submit Response: {}", entity);
-			assertNotEquals(entity, null);
-			assertEquals(HttpStatus.OK, entity.getStatus());
-			assertEquals(order, entity.getOrder());
-			assertEquals(order.hashCode(), entity.getOrder().hashCode());
-		}
-		
-		assertNotEquals(client, null);
-		assertFalse(client.isNew());
-		assertEquals("1", client.getId());
-		assertEquals("localhost:1080", client.getBaseUrl());
-		assertEquals("UTS", client.getCode());
-		assertEquals("United Terminal Service", client.getName());
-		Iterator<ClientDetail> it = client.getDetails().iterator();
-		ClientDetail detail = it.next();
-		assertNotEquals(detail, null);
-		assertEquals(client.getDetails().stream().findFirst().get(), detail);
-		assertEquals(client.getDetails().stream().findFirst().get().hashCode(), detail.hashCode());
-		assertEquals(0, client.getDetails().stream().findFirst().get().compareTo(detail));
-		assertEquals(client, detail.getClient());
-		assertEquals(client.hashCode(), detail.getClient().hashCode());
-		assertEquals(0, client.compareTo(detail.getClient()));
-		assertEquals("1", detail.getId());
-		assertEquals("Branch One", detail.getName());
-		assertEquals("00011080", detail.getUcn());
-	}
-	
-	protected Case caseRequest(Inventory inventory,
-			Customer customer, User user) {
-		var request = new Case();
-		request.setCaseDate(1672462800000l);
-		request.setCaseId("1");
-		request.setCustomerUcn(customer.getLocationId());
-		request.setUserId(user.getUserId());
-		var assetIds = new TreeSet<String>();
-		assetIds.add(inventory.getAssetId());
-		request.setAssetIds(assetIds);
-		return request;
 	}
 }

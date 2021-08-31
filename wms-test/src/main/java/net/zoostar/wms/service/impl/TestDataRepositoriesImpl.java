@@ -19,11 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.model.AbstractStringPersistable;
-import net.zoostar.wms.service.Repositories;
+import net.zoostar.wms.service.TestDataRepositories;
 
 @Slf4j
-public class RepositoriesImpl<T extends AbstractStringPersistable> implements Repositories<T>, InitializingBean {
+public class TestDataRepositoriesImpl<T> implements TestDataRepositories<T>, InitializingBean {
 
 	@Value("${repositories.path:data}")
 	private String path;

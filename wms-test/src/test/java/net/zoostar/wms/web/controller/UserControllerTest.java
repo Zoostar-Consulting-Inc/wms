@@ -14,13 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.User;
-import net.zoostar.wms.service.Repositories;
+import net.zoostar.wms.service.TestDataRepositories;
 import net.zoostar.wms.web.request.UserSearchRequest;
 
 class UserControllerTest extends AbstractControllerTestContext {
 	
 	@Autowired
-	protected Repositories<User> repositories;
+	protected TestDataRepositories<User> repositories;
 	
 	@Test
 	void testRetrieveUserByUserId() throws Exception {

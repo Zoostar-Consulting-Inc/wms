@@ -1,56 +1,51 @@
 package net.zoostar.wms.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
-public class Order {
-
-	private String caseId;
+public class Order extends Case {
 	
-	private long caseDate;
-
-	private String customerUcn;
+	private String url;
 	
-	private String userId;
-	
-	private Map<String, Set<String>> urls;
-
-	public Order(Case order) {
-		this.caseId = order.getCaseId();
-		this.caseDate = order.getCaseDate();
-		this.customerUcn = order.getCustomerUcn();
-		this.userId = order.getUserId();
-		this.urls = new HashMap<>();
+	public Order(String url, Case order) {
+		this.url = url;
+		setCaseDate(order.getCaseDate());
+		setCaseId(order.getCaseId());
+		setCustomerUcn(order.getCustomerUcn());
+		setUserId(order.getUserId());
+		this.setAssetIds(new HashSet<>());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(caseId);
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(url);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
 			return false;
-		}
-
-		if (this.getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
+		Order other = (Order) obj;
+		return Objects.equals(url, other.url);
+	}
 
-		Order that = (Order) obj;
-		return Objects.equals(caseId, that.caseId);
+	@Override
+	public String toString() {
+		return "Order [url=" + url + ", toString()=" + super.toString() + "]";
 	}
 
 }

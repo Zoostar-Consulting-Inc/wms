@@ -35,13 +35,14 @@
 	<beans profile="test">
 		<context:property-placeholder location="classpath:app.properties, classpath:test/env.properties" />
 		
-		<bean id="repositories" class="net.zoostar.wms.service.impl.RepositoriesImpl">
+		<bean id="repositories" class="net.zoostar.wms.service.impl.TestDataRepositoriesImpl">
 			<property name="entityTypes">
 				<set value-type="java.lang.Class">
 					<value>net.zoostar.wms.model.Client</value>
 					<value>net.zoostar.wms.model.Customer</value>
 					<value>net.zoostar.wms.model.Inventory</value>
 					<value>net.zoostar.wms.model.User</value>
+					<value>net.zoostar.wms.model.Case</value>
 				</set>
 			</property>
 		</bean>

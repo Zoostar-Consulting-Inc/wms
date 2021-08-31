@@ -19,13 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.Customer;
-import net.zoostar.wms.service.Repositories;
+import net.zoostar.wms.service.TestDataRepositories;
 import net.zoostar.wms.web.request.CustomerSearchRequest;
 
 class CustomerControllerTest extends AbstractControllerTestContext {
 	
 	@Autowired
-	protected Repositories<Customer> repositories;
+	protected TestDataRepositories<Customer> repositories;
 
 	@Test
 	void testFindByEmail() throws Exception {

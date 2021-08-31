@@ -1,67 +1,49 @@
 package net.zoostar.wms.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
 import net.zoostar.wms.model.Order;
 import net.zoostar.wms.service.CaseService;
 import net.zoostar.wms.service.ClientService;
-import net.zoostar.wms.service.OrderService;
-import net.zoostar.wms.web.response.OrderSubmitResponse;
+import net.zoostar.wms.service.InventoryService;
+import net.zoostar.wms.service.RestProxyService;
+import net.zoostar.wms.service.UserService;
+import net.zoostar.wms.web.response.ResponseEntityBean;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 public class CaseServiceImpl implements CaseService, InitializingBean {
+	
+	@Getter
+	protected HttpHeaders headers;
 
 	@Autowired
 	protected ClientService clientManager;
 	
 	@Autowired
-	protected OrderService orderManager;
-	
-	protected HttpHeaders headers;
-	
-	@Override
-	public List<OrderSubmitResponse> order(Case order) {
-        Order splitOrder = splitOrder(order);
-		var responses = new ArrayList<OrderSubmitResponse>(splitOrder.getUrls().size());
-        HttpEntity<Order> request = new HttpEntity<>(splitOrder, headers);
-		for(String url : splitOrder.getUrls().keySet()) {
-	        log.info("Placing order: {}...", request.toString());
-	        responses.add(orderManager.submit(url, request));
-		}
-		return responses;
-	}
+	protected RestProxyService<Order, Order> restCaseManager;
 
-	@Override
-	public Order splitOrder(Case order) {
-		log.info("{}", "Splitting order per unique client...");
-		Order splitOrder = new Order(order);
-		var urls = splitOrder.getUrls();
-		for(String assetId : order.getAssetIds()) {
-			Client client = clientManager.retrieveByAssetId(assetId);
-			var assetIds = urls.get(client.getBaseUrl());
-			if(assetIds == null) {
-				assetIds = new HashSet<>();
-				urls.put(client.getBaseUrl(), assetIds);
-			}
-			assetIds.add(assetId);
-		}
-		return splitOrder;
-	}
+	@Autowired
+	protected InventoryService inventoryManager;
+	
+	@Autowired
+	protected UserService userManager;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -75,10 +57,40 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
         headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
         log.info("HttpHeaders initialized: {}.", headers);
 	}
+	
+	@Override
+	public List<ResponseEntityBean<Order>> order(Case order) {
+		var splitOrders = splitCase(order);
+		var responses = new ArrayList<ResponseEntityBean<Order>>(splitOrders.size());
+		for(Order splitOrder: splitOrders) {
+			var response = order(splitOrder);
+			log.info("Response received: {}", response);
+	        responses.add(response);
+		}
+		return responses;
+	}
 
 	@Override
-	public HttpHeaders getHeaders() {
-		return headers;
+	public Collection<Order> splitCase(Case order) {
+		log.info("{}", "Splitting order per unique client...");
+		var orders = new HashMap<Client, Order>();
+		for(String assetId : order.getAssetIds()) {
+			Client client = clientManager.retrieveByAssetId(assetId);
+			Order splitOrder = orders.get(client);
+			if(splitOrder == null) {
+				splitOrder = new Order(client.getBaseUrl(), order);
+				orders.put(client, splitOrder);
+			}
+			splitOrder.getAssetIds().add(assetId);
+		}
+		return orders.values();
+	}
+
+	@Override
+	public ResponseEntityBean<Order> order(Order order) {
+		log.info("Placing order: {}", order);
+		return restCaseManager.exchange(order.getUrl(),
+				HttpMethod.POST, headers, order, Order.class);
 	}
 
 }

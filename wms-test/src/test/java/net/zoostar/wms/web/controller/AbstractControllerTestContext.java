@@ -23,7 +23,8 @@ import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
 import net.zoostar.wms.dao.UserRepository;
-import net.zoostar.wms.service.OrderService;
+import net.zoostar.wms.model.Order;
+import net.zoostar.wms.service.RestProxyService;
 
 @WebAppConfiguration
 @ActiveProfiles({"test"})
@@ -53,7 +54,7 @@ public abstract class AbstractControllerTestContext {
 	protected ClientDetailsRepository clientDetailsRepository;
 	
 	@MockBean
-	protected OrderService orderManager;
+	protected RestProxyService<Order, Order> orderSubmitManager;
 	
 	@Autowired
 	protected WebApplicationContext wac;

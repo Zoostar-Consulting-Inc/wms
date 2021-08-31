@@ -19,13 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import net.zoostar.wms.model.Inventory;
-import net.zoostar.wms.service.Repositories;
+import net.zoostar.wms.service.TestDataRepositories;
 import net.zoostar.wms.web.request.InventorySearchRequest;
 
 class InventoryControllerTest extends AbstractControllerTestContext {
 	
 	@Autowired
-	protected Repositories<Inventory> repositories;
+	protected TestDataRepositories<Inventory> repositories;
 
 	@Test
 	void testFindByAssetId() throws Exception {
