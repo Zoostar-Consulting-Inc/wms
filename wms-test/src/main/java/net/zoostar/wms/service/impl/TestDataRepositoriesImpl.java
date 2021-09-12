@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Setter;
@@ -47,7 +45,7 @@ public class TestDataRepositoriesImpl<T> implements TestDataRepositories<T>, Ini
 		loadRepositoryData();
 	}
 
-	private void loadRepositoryData() throws JsonParseException, JsonMappingException, IOException {
+	private void loadRepositoryData() throws IOException {
 		var dir = new ClassPathResource(path);
 		log.info("Loading mock json entity data files from: {}", dir);
 		for(Class<T> entityType: entityTypes) {
