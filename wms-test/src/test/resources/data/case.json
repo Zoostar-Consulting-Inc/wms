@@ -2,7 +2,7 @@
 	"caseId1": {
 		"caseId": "caseId1",
 		"caseDate": 253402318799000,
-		"customerUcn": "",
+		"customerUcn": "01386585",
 		"userId": "user1@email.com",
 		"assetIds": [
 			"FE18888",

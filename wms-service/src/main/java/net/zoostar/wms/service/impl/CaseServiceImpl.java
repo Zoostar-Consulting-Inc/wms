@@ -1,29 +1,28 @@
 package net.zoostar.wms.service.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.model.Case;
 import net.zoostar.wms.model.Client;
-import net.zoostar.wms.model.Order;
 import net.zoostar.wms.service.CaseService;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.RestProxyService;
 import net.zoostar.wms.service.UserService;
-import net.zoostar.wms.web.response.ResponseEntityBean;
+import net.zoostar.wms.web.request.Case;
+import net.zoostar.wms.web.request.OrderRequest;
+import net.zoostar.wms.web.response.CaseResponse;
 
 @Slf4j
 @Service
@@ -37,7 +36,7 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 	protected ClientService clientManager;
 	
 	@Autowired
-	protected RestProxyService<Order, Order> restCaseManager;
+	protected RestProxyService<OrderRequest, OrderRequest> restCaseManager;
 
 	@Autowired
 	protected InventoryService inventoryManager;
@@ -59,26 +58,28 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 	}
 	
 	@Override
-	public List<ResponseEntityBean<Order>> order(Case order) {
+	public CaseResponse order(Case order) {
+		var responses = new CaseResponse(order);
 		var splitOrders = splitCase(order);
-		var responses = new ArrayList<ResponseEntityBean<Order>>(splitOrders.size());
-		for(Order splitOrder: splitOrders) {
+		for(OrderRequest splitOrder: splitOrders) {
 			var response = order(splitOrder);
 			log.info("Response received: {}", response);
-	        responses.add(response);
+			for(String assetId : splitOrder.getAssetIds()) {
+				responses.getResponses().put(assetId, response.getStatusCode());
+			}
 		}
 		return responses;
 	}
 
 	@Override
-	public Collection<Order> splitCase(Case order) {
+	public Collection<OrderRequest> splitCase(Case order) {
 		log.info("{}", "Splitting order per unique client...");
-		var orders = new HashMap<Client, Order>();
+		var orders = new HashMap<Client, OrderRequest>();
 		for(String assetId : order.getAssetIds()) {
 			Client client = clientManager.retrieveByAssetId(assetId);
-			Order splitOrder = orders.get(client);
+			OrderRequest splitOrder = orders.get(client);
 			if(splitOrder == null) {
-				splitOrder = new Order(client.getBaseUrl(), order);
+				splitOrder = new OrderRequest(client.getBaseUrl(), order);
 				orders.put(client, splitOrder);
 			}
 			splitOrder.getAssetIds().add(assetId);
@@ -87,10 +88,10 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 	}
 
 	@Override
-	public ResponseEntityBean<Order> order(Order order) {
+	public ResponseEntity<OrderRequest> order(OrderRequest order) {
 		log.info("Placing order: {}", order);
 		return restCaseManager.exchange(order.getUrl(),
-				HttpMethod.POST, headers, order, Order.class);
+				HttpMethod.POST, headers, order, OrderRequest.class);
 	}
 
 }

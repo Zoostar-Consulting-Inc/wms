@@ -42,7 +42,7 @@
 					<value>net.zoostar.wms.model.Customer</value>
 					<value>net.zoostar.wms.model.Inventory</value>
 					<value>net.zoostar.wms.model.User</value>
-					<value>net.zoostar.wms.model.Case</value>
+					<value>net.zoostar.wms.web.request.Case</value>
 				</set>
 			</property>
 		</bean>

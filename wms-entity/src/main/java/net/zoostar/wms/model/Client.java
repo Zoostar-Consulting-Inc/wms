@@ -1,6 +1,5 @@
 package net.zoostar.wms.model;
 
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,12 +15,14 @@ import org.springframework.data.domain.Persistable;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Client implements Comparable<Client>, Persistable<String> {
 
 	@Id
@@ -30,6 +31,7 @@ public class Client implements Comparable<Client>, Persistable<String> {
 	@GenericGenerator(name="uuid", strategy="uuid2")
 	private String id;
 
+	@EqualsAndHashCode.Include
 	private String code;
 	
 	private String name;
@@ -43,25 +45,6 @@ public class Client implements Comparable<Client>, Persistable<String> {
 	@Override
 	public boolean isNew() {
 		return StringUtils.isBlank(id);
-	}
-	
-	@Override
-	public int hashCode() {
-		return Objects.hash(code);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		
-		Client that = (Client) obj;
-		return Objects.equals(code, that.code);
 	}
 
 	@Override
