@@ -5,12 +5,10 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import net.zoostar.wms.model.AbstractCase;
 
 @Getter
 @Setter
-@ToString(callSuper = true)
 public class Case extends AbstractCase {
 	
 	private Set<String> assetIds;
@@ -18,6 +16,14 @@ public class Case extends AbstractCase {
 	public Case() {
 		super();
 		this.assetIds = new HashSet<>();
+	}
+	
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
+	public boolean equals(Object that) {
+		return super.equals(that);
 	}
 
 }

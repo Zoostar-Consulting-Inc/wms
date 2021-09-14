@@ -32,4 +32,11 @@ public class CaseResponse extends AbstractCase {
 		order.getAssetIds().stream().forEach(entity -> responses.put(entity, HttpStatus.OK));
 	}
 
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
+	public boolean equals(Object that) {
+		return super.equals(that);
+	}
 }
