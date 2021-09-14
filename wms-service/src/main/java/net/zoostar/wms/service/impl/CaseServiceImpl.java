@@ -77,11 +77,8 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 		var orders = new HashMap<Client, OrderRequest>();
 		for(String assetId : order.getAssetIds()) {
 			Client client = clientManager.retrieveByAssetId(assetId);
-			OrderRequest splitOrder = orders.get(client);
-			if(splitOrder == null) {
-				splitOrder = new OrderRequest(client.getBaseUrl(), order);
-				orders.put(client, splitOrder);
-			}
+			var splitOrder = orders.computeIfAbsent(client, k -> new OrderRequest(client.getBaseUrl(), order));
+			orders.put(client, splitOrder);
 			splitOrder.getAssetIds().add(assetId);
 		}
 		return orders.values();
