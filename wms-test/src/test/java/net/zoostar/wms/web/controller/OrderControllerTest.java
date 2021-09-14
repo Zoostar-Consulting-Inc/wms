@@ -112,7 +112,6 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		assertNotNull(actual);
 		log.info("Response received: {}", actual);
 		assertEquals(expected.hashCode(), actual.hashCode());
-		assertNotEquals(expected, actual);
 		assertEquals(expected.getCaseId(), actual.getCaseId());
 		assertEquals(expected.getCaseDate(), actual.getCaseDate());
 		assertNotEquals(expected.getClass(), actual.getClass());
