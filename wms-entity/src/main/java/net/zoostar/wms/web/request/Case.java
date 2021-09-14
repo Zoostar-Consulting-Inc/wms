@@ -18,10 +18,12 @@ public class Case extends AbstractCase {
 		this.assetIds = new HashSet<>();
 	}
 	
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object that) {
 		return super.equals(that);
 	}

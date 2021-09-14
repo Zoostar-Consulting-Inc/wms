@@ -1,3 +1,4 @@
+
 package net.zoostar.wms.web.response;
 
 import java.util.HashMap;
@@ -32,10 +33,12 @@ public class CaseResponse extends AbstractCase {
 		order.getAssetIds().stream().forEach(entity -> responses.put(entity, HttpStatus.OK));
 	}
 
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object that) {
 		return super.equals(that);
 	}
