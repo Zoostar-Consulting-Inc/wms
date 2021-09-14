@@ -13,7 +13,7 @@ import net.zoostar.wms.web.request.Case;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class CaseResponse extends AbstractCase {
 
 	private Map<String, HttpStatus> responses;

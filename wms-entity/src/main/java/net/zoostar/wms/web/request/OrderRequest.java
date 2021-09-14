@@ -4,20 +4,14 @@ import java.util.HashSet;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class OrderRequest extends Case {
 	
 	private String url;
-	
-	public OrderRequest() {
-		super();
-	}
 	
 	public OrderRequest(String url, Case order) {
 		super();

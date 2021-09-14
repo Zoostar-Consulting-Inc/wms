@@ -1,6 +1,7 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,11 +55,21 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
 		log.info("Retrieved mocking client: {}", client);
 		var clientDetails = client.getDetails();
+		ClientDetail detailPrevious = null;
+		ClientDetail detailCurrent = null;
 		for(ClientDetail detail : clientDetails) {
-			log.info("Setting mock client detail with client: {}", detail);
 			detail.setClient(client);
+			log.info("Setting mock client detail with client: {}", detail);
 			testClientDetails.put(detail.getUcn(), detail);
+			assertNotEquals(detail, detailPrevious);
+			if(detailPrevious != null) {
+				assertTrue("Expected: " + detailPrevious.compareTo(detail),
+						detailPrevious.compareTo(detail) < 0);
+			}
+			detailPrevious = detail;
+			detailCurrent = detail;
 		}
+		assertEquals(detailPrevious, detailCurrent);
 		
 		var caseEntry = cases.getRepository(Case.class).entrySet().stream().findFirst().get();
 		var expected = caseEntry.getValue();
@@ -100,9 +111,10 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var actual = mapper.readValue(response.getContentAsString(), CaseResponse.class);
 		assertNotNull(actual);
 		log.info("Response received: {}", actual);
+		assertEquals(expected.hashCode(), actual.hashCode());
+		assertNotEquals(expected, actual);
 		assertEquals(expected.getCaseId(), actual.getCaseId());
 		assertEquals(expected.getCaseDate(), actual.getCaseDate());
-		assertEquals(expected, actual);
 		assertNotEquals(expected.getClass(), actual.getClass());
 		assertEquals(expected.getCustomerUcn(), actual.getCustomerUcn());
 		assertEquals(expected.getUserId(), actual.getUserId());
@@ -110,5 +122,14 @@ class OrderControllerTest extends AbstractControllerTestContext {
 			assertTrue(actual.getResponses().containsKey(asseetId));
 			assertEquals(HttpStatus.OK, actual.getResponses().get(asseetId));
 		}
+		
+		var sameCase = actual;
+		assertEquals(sameCase, actual);
+
+		var clientNext = new Client();
+		clientNext.setCode("PEDEX");
+		assertFalse(client.isNew());
+		assertTrue(clientNext.isNew());
+		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
 	}
 }

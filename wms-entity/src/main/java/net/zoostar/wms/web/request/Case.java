@@ -10,7 +10,7 @@ import net.zoostar.wms.model.AbstractCase;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class Case extends AbstractCase {
 	
 	private Set<String> assetIds;
