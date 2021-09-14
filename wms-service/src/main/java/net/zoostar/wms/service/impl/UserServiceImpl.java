@@ -11,14 +11,15 @@ import net.zoostar.wms.model.User;
 import net.zoostar.wms.service.UserService;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+
+	public static final String USER_UPDATE_URL = "http://usersystem.base.url";
 
 	@Autowired
 	protected UserRepository userRepository;
 	
 	@Override
-	@Transactional(readOnly = true)
 	public User retrieveByUserId(String userId) {
 		var entity = userRepository.findByUserId(userId);
 		if(entity.isEmpty()) {

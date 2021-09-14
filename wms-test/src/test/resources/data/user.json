@@ -1,57 +1,57 @@
-[
-  {
-  	"id": "1",
+{
+  "user1@email.com": {
+    "id": "1",
     "userId": "user1@email.com",
     "source": "default"
   },
-  {
-  	"id": "2",
+  "user2@email.com": {
+    "id": "2",
     "userId": "user2@email.com",
     "source": "default"
   },
-  {
-  	"id": "3",
+  "user3@email.com": {
+    "id": "3",
     "userId": "user3@email.com",
     "source": "default"
   },
-  {
-  	"id": "4",
+  "user4@email.com": {
+    "id": "4",
     "userId": "user4@email.com",
     "source": "default"
   },
-  {
-  	"id": "5",
+  "user5@email.com": {
+    "id": "5",
     "userId": "user5@email.com",
     "source": "default"
   },
-  {
-  	"id": "6",
+  "user6@email.com": {
+    "id": "6",
     "userId": "user6@email.com",
     "source": "default"
   },
-  {
-  	"id": "7",
+  "user7@email.com": {
+    "id": "7",
     "userId": "user7@email.com",
     "source": "default"
   },
-  {
-  	"id": "8",
+  "user8@email.com": {
+    "id": "8",
     "userId": "user8@email.com",
     "source": "default"
   },
-  {
-  	"id": "9",
+  "user9@email.com": {
+    "id": "9",
     "userId": "user9@email.com",
     "source": "default"
   },
-  {
-  	"id": "10",
+  "user10@email.com": {
+    "id": "10",
     "userId": "user10@email.com",
     "source": "default"
   },
-  {
-  	"id": "11",
+  "user11@email.com": {
+    "id": "11",
     "userId": "user11@email.com",
     "source": "default"
   }
-]
+}

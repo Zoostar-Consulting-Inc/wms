@@ -22,14 +22,14 @@ public class Customer extends AbstractMultiSourceStringPersistable implements Co
 	
 	@Override
 	public int compareTo(Customer that) {
-		return this.email.compareTo(that.getEmail());
+		return this.locationId.compareTo(that.getLocationId());
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(email);
+		result = prime * result + Objects.hash(locationId);
 		return result;
 	}
 
@@ -39,7 +39,7 @@ public class Customer extends AbstractMultiSourceStringPersistable implements Co
 			return false;
 		}
 		Customer other = (Customer) obj;
-		return Objects.equals(email, other.email);
+		return Objects.equals(locationId, other.locationId);
 	}
 
 }

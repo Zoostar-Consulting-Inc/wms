@@ -25,10 +25,10 @@
 		<aggregate.report.dir>wms-test/target/site/jacoco-aggregate</aggregate.report.dir>
 	</properties>
 	<modules>
-		<module>wms-service</module>
 		<module>wms-entity</module>
-		<module>wms-test</module>
+		<module>wms-service</module>
 		<module>wms-web</module>
+		<module>wms-test</module>
 		<module>wms-war</module>
 	</modules>
 	<dependencies>
@@ -58,6 +58,9 @@
 			        <groupId>org.apache.maven.plugins</groupId>
 			        <artifactId>maven-jar-plugin</artifactId>
 			        <version>3.2.0</version>
+			        <configuration>
+			        	<skipIfEmpty>true</skipIfEmpty>
+			        </configuration>
         		</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

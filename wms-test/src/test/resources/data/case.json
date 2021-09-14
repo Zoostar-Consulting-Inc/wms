@@ -1,10 +1,13 @@
-[
-  {
-    "id": "1",
-    "caseId": "1",
-    "caseDate": 1672462800000,
-    "customerUcn": "01386585",
-    "userId": "user1@email.com",
-    "assetIds": ["FE28888", "FE18888"]
-  }
-]
+{
+	"caseId1": {
+		"caseId": "caseId1",
+		"caseDate": 253402318799000,
+		"customerUcn": "01386585",
+		"userId": "user1@email.com",
+		"assetIds": [
+			"FE18888",
+			"FE28888",
+			"FE38888"
+		]
+	}
+}
