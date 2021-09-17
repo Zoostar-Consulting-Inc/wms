@@ -1,4 +1,4 @@
-package net.zoostar.wms.model;
+package net.zoostar.wms.entity;
 
 import java.util.Objects;
 
@@ -31,18 +31,18 @@ public class ClientDetail extends AbstractStringPersistable implements Comparabl
 	}
 
 	@Override
-	public boolean equals(Object that) {
-		if (this == that) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (that == null) {
+		if (obj == null) {
 			return false;
 		}
-		if (getClass() != that.getClass()) {
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		ClientDetail detail = (ClientDetail) that;
-		return Objects.equals(client, detail.client) && Objects.equals(ucn, detail.ucn);
+		ClientDetail other = (ClientDetail) obj;
+		return Objects.equals(client, other.client) && Objects.equals(ucn, other.ucn);
 	}
 
 	@Override

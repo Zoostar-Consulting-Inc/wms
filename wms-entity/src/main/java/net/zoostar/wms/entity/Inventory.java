@@ -1,4 +1,4 @@
-package net.zoostar.wms.model;
+package net.zoostar.wms.entity;
 
 import java.util.Objects;
 

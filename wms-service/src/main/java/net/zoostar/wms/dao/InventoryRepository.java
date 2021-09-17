@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import net.zoostar.wms.model.Inventory;
+import net.zoostar.wms.entity.Inventory;
 
 public interface InventoryRepository extends PagingAndSortingRepository<Inventory, String> {
 	Optional<Inventory> findByAssetId(String assetId);
