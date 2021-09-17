@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.zoostar.wms.dao.ClientDetailsRepository;
 import net.zoostar.wms.dao.ClientRepository;
-import net.zoostar.wms.model.Client;
-import net.zoostar.wms.model.Inventory;
+import net.zoostar.wms.entity.Client;
+import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.InventoryService;
 

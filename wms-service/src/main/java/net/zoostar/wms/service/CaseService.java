@@ -1,21 +1,23 @@
 package net.zoostar.wms.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import net.zoostar.wms.web.request.Case;
-import net.zoostar.wms.web.request.OrderRequest;
-import net.zoostar.wms.web.response.CaseResponse;
+import net.zoostar.wms.entity.Client;
+import net.zoostar.wms.model.Case;
+import net.zoostar.wms.model.OrderRequest;
+import net.zoostar.wms.model.OrderResponse;
 
 public interface CaseService {
 
-	Collection<OrderRequest> splitCase(Case order);
+	Map<Client, OrderRequest> splitCase(Case order);
 
-	CaseResponse order(Case request);
+	Collection<OrderResponse> order(Case request);
 
-	ResponseEntity<OrderRequest> order(OrderRequest order);
+	ResponseEntity<Case> order(OrderRequest order);
 	
 	HttpHeaders getHeaders();
 

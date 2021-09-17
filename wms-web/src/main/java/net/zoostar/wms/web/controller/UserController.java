@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.model.User;
+import net.zoostar.wms.entity.User;
 import net.zoostar.wms.service.UserService;
 import net.zoostar.wms.web.request.UserSearchRequest;
 

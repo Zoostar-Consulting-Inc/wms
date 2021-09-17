@@ -1,6 +1,6 @@
 package net.zoostar.wms.service;
 
-import net.zoostar.wms.model.Client;
+import net.zoostar.wms.entity.Client;
 
 public interface ClientService {
 	Client retrieveByUcn(String ucn);

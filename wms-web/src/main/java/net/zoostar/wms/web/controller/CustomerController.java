@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
 import net.zoostar.wms.web.request.CustomerSearchRequest;
 

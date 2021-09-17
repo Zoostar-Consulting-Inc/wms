@@ -38,11 +38,11 @@
 		<bean id="repositories" class="net.zoostar.wms.service.impl.TestDataRepositoriesImpl">
 			<property name="entityTypes">
 				<set value-type="java.lang.Class">
-					<value>net.zoostar.wms.model.Client</value>
-					<value>net.zoostar.wms.model.Customer</value>
-					<value>net.zoostar.wms.model.Inventory</value>
-					<value>net.zoostar.wms.model.User</value>
-					<value>net.zoostar.wms.web.request.Case</value>
+					<value>net.zoostar.wms.entity.Client</value>
+					<value>net.zoostar.wms.entity.Customer</value>
+					<value>net.zoostar.wms.entity.Inventory</value>
+					<value>net.zoostar.wms.entity.User</value>
+					<value>net.zoostar.wms.model.Case</value>
 				</set>
 			</property>
 		</bean>

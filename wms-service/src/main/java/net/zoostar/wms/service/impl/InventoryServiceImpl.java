@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.InventoryRepository;
-import net.zoostar.wms.model.Inventory;
+import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.InventoryService;
 
 @Slf4j
