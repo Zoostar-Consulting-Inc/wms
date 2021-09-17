@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,8 +24,6 @@ import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
 import net.zoostar.wms.dao.UserRepository;
-import net.zoostar.wms.service.RestProxyService;
-import net.zoostar.wms.web.request.OrderRequest;
 
 @WebAppConfiguration
 @ActiveProfiles({"test"})
@@ -54,7 +53,7 @@ public abstract class AbstractControllerTestContext {
 	protected ClientDetailsRepository clientDetailsRepository;
 	
 	@MockBean
-	protected RestProxyService<OrderRequest, OrderRequest> orderSubmitManager;
+	protected RestTemplate restTemplate;
 	
 	@Autowired
 	protected WebApplicationContext wac;

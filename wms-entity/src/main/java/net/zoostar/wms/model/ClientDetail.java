@@ -31,18 +31,18 @@ public class ClientDetail extends AbstractStringPersistable implements Comparabl
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object that) {
+		if (this == that) {
 			return true;
 		}
-		if (obj == null) {
+		if (that == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != that.getClass()) {
 			return false;
 		}
-		ClientDetail that = (ClientDetail) obj;
-		return Objects.equals(client, that.client) && Objects.equals(ucn, that.ucn);
+		ClientDetail detail = (ClientDetail) that;
+		return Objects.equals(client, detail.client) && Objects.equals(ucn, detail.ucn);
 	}
 
 	@Override
