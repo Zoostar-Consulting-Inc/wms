@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -89,8 +90,8 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var orders = caseManager.splitCase(inboundRequest);
 		
 		for(var order : orders) {
-			when(orderSubmitManager.exchange(order.getUrl(),
-					HttpMethod.POST, caseManager.getHeaders(), order, OrderRequest.class)).
+			when(restTemplate.exchange(order.getUrl(),
+					HttpMethod.POST, new HttpEntity<>(order, caseManager.getHeaders()), OrderRequest.class)).
 						thenReturn(new ResponseEntity<OrderRequest>(order, HttpStatus.OK));
 		}
 
@@ -125,9 +126,13 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var sameCase = actual;
 		assertEquals(sameCase, actual);
 
+		assertEquals("1", client.getId());
+		assertEquals("United Terminal Service", client.getName());
+		assertFalse(client.isNew());
+		assertNotNull(client.toString());
+		
 		var clientNext = new Client();
 		clientNext.setCode("PEDEX");
-		assertFalse(client.isNew());
 		assertTrue(clientNext.isNew());
 		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
 	}

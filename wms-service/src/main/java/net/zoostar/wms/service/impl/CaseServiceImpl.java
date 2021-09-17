@@ -5,12 +5,14 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +20,6 @@ import net.zoostar.wms.model.Client;
 import net.zoostar.wms.service.CaseService;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.InventoryService;
-import net.zoostar.wms.service.RestProxyService;
 import net.zoostar.wms.service.UserService;
 import net.zoostar.wms.web.request.Case;
 import net.zoostar.wms.web.request.OrderRequest;
@@ -36,7 +37,7 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 	protected ClientService clientManager;
 	
 	@Autowired
-	protected RestProxyService<OrderRequest, OrderRequest> restCaseManager;
+	protected RestTemplate orderServer;
 
 	@Autowired
 	protected InventoryService inventoryManager;
@@ -87,8 +88,8 @@ public class CaseServiceImpl implements CaseService, InitializingBean {
 	@Override
 	public ResponseEntity<OrderRequest> order(OrderRequest order) {
 		log.info("Placing order: {}", order);
-		return restCaseManager.exchange(order.getUrl(),
-				HttpMethod.POST, headers, order, OrderRequest.class);
+		return orderServer.exchange(order.getUrl(),
+				HttpMethod.POST, new HttpEntity<>(order, headers), OrderRequest.class);
 	}
 
 }
