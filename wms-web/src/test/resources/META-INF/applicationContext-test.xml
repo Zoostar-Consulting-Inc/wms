@@ -42,7 +42,6 @@
 					<value>net.zoostar.wms.entity.Customer</value>
 					<value>net.zoostar.wms.entity.Inventory</value>
 					<value>net.zoostar.wms.entity.User</value>
-					<value>net.zoostar.wms.model.Case</value>
 				</set>
 			</property>
 		</bean>

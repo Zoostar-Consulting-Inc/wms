@@ -1,4 +1,4 @@
-package net.zoostar.wms.model;
+package net.zoostar.wms.web.request;
 
 import java.util.Objects;
 
@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class AbstractCase {
+public abstract class AbstractOrder {
 
 	private String caseId;
 	
@@ -35,7 +35,7 @@ public abstract class AbstractCase {
 		if (getClass() != that.getClass()) {
 			return false;
 		}
-		AbstractCase other = (AbstractCase) that;
+		AbstractOrder other = (AbstractOrder) that;
 		return Objects.equals(caseId, other.caseId);
 	}
 }

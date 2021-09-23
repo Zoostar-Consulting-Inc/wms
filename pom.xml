@@ -28,8 +28,6 @@
 		<module>wms-entity</module>
 		<module>wms-service</module>
 		<module>wms-web</module>
-		
-		
 	</modules>
 	<dependencies>
 		<dependency>
