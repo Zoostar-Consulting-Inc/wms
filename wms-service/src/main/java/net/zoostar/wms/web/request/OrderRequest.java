@@ -1,4 +1,4 @@
-package net.zoostar.wms.model;
+package net.zoostar.wms.web.request;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -11,11 +11,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class Case extends AbstractCase {
+public class OrderRequest extends AbstractOrder {
 	
 	private Set<String> assetIds;
 	
-	public Case() {
+	public OrderRequest() {
 		super();
 		this.assetIds = new HashSet<>();
 	}
@@ -33,7 +33,7 @@ public class Case extends AbstractCase {
 		if (!super.equals(that)) {
 			return false;
 		}
-		Case other = (Case) that;
+		OrderRequest other = (OrderRequest) that;
 		return Objects.equals(assetIds, other.assetIds);
 	}
 

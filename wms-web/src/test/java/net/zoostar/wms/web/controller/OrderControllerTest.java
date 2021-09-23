@@ -23,9 +23,9 @@ import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.entity.Inventory;
-import net.zoostar.wms.model.Case;
-import net.zoostar.wms.service.CaseService;
+import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
+import net.zoostar.wms.web.request.OrderRequest;
 
 class OrderControllerTest extends AbstractControllerTestContext {
 
@@ -36,13 +36,13 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	private TestDataRepositories<Client> clients;
 	
 	@Autowired
-	protected TestDataRepositories<Case> cases;
+	protected TestDataRepositories<OrderRequest> cases;
 	
 	@Autowired
 	protected TestDataRepositories<Customer> customers;
 	
 	@Autowired
-	private CaseService caseManager;
+	private OrderService caseManager;
 	
 	@Test
 	void testOrderSubmitSuccess() throws Exception {
@@ -70,7 +70,7 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		}
 		assertEquals(detailPrevious, detailCurrent);
 		
-		var caseEntry = cases.getRepository(Case.class).entrySet().stream().findFirst().get();
+		var caseEntry = cases.getRepository(OrderRequest.class).entrySet().stream().findFirst().get();
 		var expected = caseEntry.getValue();
 		for(var assetId : caseEntry.getValue().getAssetIds()) {
 			var inventory = inventories.getRepository(Inventory.class).get(assetId);
@@ -82,15 +82,15 @@ class OrderControllerTest extends AbstractControllerTestContext {
 					thenReturn(Optional.of(testClientDetails.get(inventory.getHomeUcn())));
 		}
 		
-		var entity = cases.getRepository(Case.class).
+		var entity = cases.getRepository(OrderRequest.class).
 				entrySet().stream().findFirst();
 		var inboundRequest = entity.get().getValue();
-		var orders = caseManager.splitCase(inboundRequest);
+		var orders = caseManager.splitOrder(inboundRequest);
 		
 		for(var order : orders.entrySet()) {
 			when(restTemplate.exchange(order.getValue().getUrl(),
-					HttpMethod.POST, new HttpEntity<>(order.getValue(), caseManager.getHeaders()), Case.class)).
-						thenReturn(new ResponseEntity<Case>(order.getValue(), HttpStatus.OK));
+					HttpMethod.POST, new HttpEntity<>(order.getValue(), caseManager.getHeaders()), OrderRequest.class)).
+						thenReturn(new ResponseEntity<OrderRequest>(order.getValue(), HttpStatus.OK));
 		}
 
 		//WHEN

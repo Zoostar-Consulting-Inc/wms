@@ -1,21 +1,22 @@
-package net.zoostar.wms.model;
+package net.zoostar.wms.service.request;
 
 import java.util.Objects;
 
 import lombok.Getter;
 import lombok.ToString;
+import net.zoostar.wms.web.request.OrderRequest;
 
 @Getter
 @ToString(callSuper = true)
-public class OrderRequest extends Case {
+public class Order extends OrderRequest {
 	
 	private String url;
 
-	public OrderRequest() {
+	public Order() {
 		super();
 	}
 	
-	public OrderRequest(String url, Case order) {
+	public Order(String url, OrderRequest order) {
 		this();
 		this.url = url;
 		setCaseDate(order.getCaseDate());
@@ -37,7 +38,7 @@ public class OrderRequest extends Case {
 		if (!super.equals(obj)) {
 			return false;
 		}
-		OrderRequest other = (OrderRequest) obj;
+		Order other = (Order) obj;
 		return Objects.equals(url, other.url);
 	}
 
