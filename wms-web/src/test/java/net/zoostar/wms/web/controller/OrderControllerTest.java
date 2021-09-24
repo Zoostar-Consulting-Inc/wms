@@ -65,13 +65,13 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		//MOCK
 		var testClientDetails = new HashMap<String, ClientDetail>();
 		var client = clients.getRepository(Client.class).entrySet().stream().findFirst().get().getValue();
-		log.info("Retrieved mocking client: {}", client);
+		log.info("Retrieved mocking client: {}", client.toString());
 		var clientDetails = client.getDetails();
 		ClientDetail detailPrevious = null;
 		ClientDetail detailCurrent = null;
 		for(ClientDetail detail : clientDetails) {
 			detail.setClient(client);
-			log.info("Setting mock client detail with client: {}", detail);
+			log.info("Setting mock client with client details: {}", detail);
 			testClientDetails.put(detail.getUcn(), detail);
 			assertNotEquals(detail, detailPrevious);
 			if(detailPrevious != null) {
@@ -95,6 +95,7 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		
 		
 		var orders = orderManager.splitOrder(inboundRequest);
+		log.info("Order split into: {}", orders.size());
 		for(var order : orders.entrySet()) {
 			when(restTemplate.exchange(order.getValue().getUrl(),
 					HttpMethod.POST, new HttpEntity<>(order.getValue(), orderManager.getHeaders()), OrderRequest.class)).
@@ -120,15 +121,14 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    assertNotNull(orderResponses);
 	    for(OrderResponse actual : orderResponses) {
 	    	assertNotNull(actual);
+	    	assertEquals(caseDate, actual.getCaseDate());
+	    	assertEquals(caseId, actual.getCaseId());
+	    	assertEquals(client.getCode(), actual.getClientCode());
+	    	assertEquals(customerUcn, actual.getCustomerUcn());
+	    	assertEquals(userId, actual.getUserId());
+	    	assertEquals(sortedAssetIds, actual.getAssetIds());
+	    	assertEquals(HttpStatus.OK, actual.getStatus());
 	    }
-
-//	    for(String assetId : expected.getAssetIds()) {
-//			assertTrue(actual.getResponses().containsKey(asseetId));
-//			assertEquals(HttpStatus.OK, actual.getResponses().get(asseetId));
-//		}
-//		
-//		var sameCase = actual;
-//		assertEquals(sameCase, actual);
 
 		assertEquals("1", client.getId());
 		assertEquals("United Terminal Service", client.getName());

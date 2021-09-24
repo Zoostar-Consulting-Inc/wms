@@ -35,9 +35,7 @@ public class TestDataRepositoriesImpl<T> implements TestDataRepositories<T>, Ini
 	
 	@Override
 	public  Map<String, T> getRepository(Class<T> clazz) {
-		Map<String, T> repository = repositories.get(clazz);
-		log.info("Found {} records in repository: {}", repository.size(), clazz);
-		return repository;
+		return repositories.get(clazz);
 	}
 
 	@Override
@@ -58,6 +56,7 @@ public class TestDataRepositoriesImpl<T> implements TestDataRepositories<T>, Ini
 					new ClassPathResource(path + "/" + filename).getInputStream(),
 					type));
 			repositories.put(entityType, repository);
+			log.info("Loaded {} entities for repository: {}", repository.size(), entityType);
 		}
 	}
 }
