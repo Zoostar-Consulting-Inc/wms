@@ -1,4 +1,3 @@
-
 package net.zoostar.wms.service.response;
 
 import java.util.Objects;
@@ -26,14 +25,18 @@ public class OrderResponse extends OrderRequest {
 	
 	public OrderResponse(ResponseEntity<OrderRequest> response, String clientCode) {
 		this();
-		OrderRequest order = response.getBody();
-		setAssetIds(order.getAssetIds());
-		setCaseDate(order.getCaseDate());
-		setCaseId(order.getCaseId());
-		setCustomerUcn(order.getCustomerUcn());
-		setUserId(order.getUserId());
 		this.clientCode = clientCode;
-		this.status = response.getStatusCode();
+		if(response != null) {
+			this.status = response.getStatusCode();
+			OrderRequest order = response.getBody();
+			if(order != null) {
+				setAssetIds(order.getAssetIds());
+				setCaseDate(order.getCaseDate());
+				setCaseId(order.getCaseId());
+				setCustomerUcn(order.getCustomerUcn());
+				setUserId(order.getUserId());
+			}
+		}
 	}
 
 	@Override
