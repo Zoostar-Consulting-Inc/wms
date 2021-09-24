@@ -1,4 +1,4 @@
-package net.zoostar.wms.service.response;
+package net.zoostar.wms.api.outbound;
 
 import java.util.Objects;
 
@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.zoostar.wms.web.request.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderRequest;
 
 @Getter
 @Setter

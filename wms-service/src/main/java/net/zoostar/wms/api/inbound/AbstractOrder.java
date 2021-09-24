@@ -1,4 +1,4 @@
-package net.zoostar.wms.web.request;
+package net.zoostar.wms.api.inbound;
 
 import java.util.Objects;
 

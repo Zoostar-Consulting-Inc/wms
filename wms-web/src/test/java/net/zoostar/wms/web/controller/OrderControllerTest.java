@@ -22,13 +22,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
-import net.zoostar.wms.service.response.OrderResponse;
-import net.zoostar.wms.web.request.OrderRequest;
 
 class OrderControllerTest extends AbstractControllerTestContext {
 
@@ -97,7 +97,7 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var orders = orderManager.splitOrder(inboundRequest);
 		log.info("Order split into: {}", orders.size());
 		for(var order : orders.entrySet()) {
-			when(restTemplate.exchange(order.getValue().getUrl(),
+			when(restTemplate.exchange(order.getValue().getClient().getBaseUrl(),
 					HttpMethod.POST, new HttpEntity<>(order.getValue(), orderManager.getHeaders()), OrderRequest.class)).
 						thenReturn(new ResponseEntity<OrderRequest>(order.getValue(), HttpStatus.OK));
 		}

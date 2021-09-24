@@ -1,24 +1,25 @@
-package net.zoostar.wms.service.request;
+package net.zoostar.wms.api.outbound;
 
 import java.util.Objects;
 
 import lombok.Getter;
 import lombok.ToString;
-import net.zoostar.wms.web.request.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.entity.Client;
 
 @Getter
 @ToString(callSuper = true)
 public class Order extends OrderRequest {
 	
-	private String url;
+	private Client client;
 
 	public Order() {
 		super();
 	}
 	
-	public Order(String url, OrderRequest order) {
+	public Order(Client client, OrderRequest order) {
 		this();
-		this.url = url;
+		this.client = client;
 		setCaseDate(order.getCaseDate());
 		setCaseId(order.getCaseId());
 		setCustomerUcn(order.getCustomerUcn());
@@ -29,7 +30,7 @@ public class Order extends OrderRequest {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(url);
+		result = prime * result + Objects.hash(client);
 		return result;
 	}
 
@@ -39,7 +40,7 @@ public class Order extends OrderRequest {
 			return false;
 		}
 		Order other = (Order) obj;
-		return Objects.equals(url, other.url);
+		return Objects.equals(client, other.client);
 	}
 
 }

@@ -6,10 +6,10 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.outbound.Order;
+import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
-import net.zoostar.wms.service.request.Order;
-import net.zoostar.wms.service.response.OrderResponse;
-import net.zoostar.wms.web.request.OrderRequest;
 
 public interface OrderService {
 

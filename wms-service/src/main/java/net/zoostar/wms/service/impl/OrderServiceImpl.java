@@ -19,14 +19,14 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.outbound.Order;
+import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.service.ClientService;
 import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.UserService;
-import net.zoostar.wms.service.request.Order;
-import net.zoostar.wms.service.response.OrderResponse;
-import net.zoostar.wms.web.request.OrderRequest;
 
 @Slf4j
 @Service
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	public Collection<OrderResponse> order(OrderRequest order) {
 		var splitOrders = splitOrder(order);
 		var responses = new HashSet<OrderResponse>(splitOrders.size());
-		for(Entry<Client,Order> entry : splitOrders.entrySet()) {
+		for(Entry<Client, Order> entry : splitOrders.entrySet()) {
 			var response = order(entry.getValue());
 			log.info("Response received: {}", response);
 			responses.add(new OrderResponse(response, entry.getKey().getCode()));
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		var orders = new HashMap<Client, Order>();
 		for(String assetId : order.getAssetIds()) {
 			Client client = clientManager.retrieveByAssetId(assetId);
-			var splitOrder = orders.computeIfAbsent(client, k -> new Order(client.getBaseUrl(), order));
+			var splitOrder = orders.computeIfAbsent(client, k -> new Order(client, order));
 			orders.put(client, splitOrder);
 			splitOrder.getAssetIds().add(assetId);
 		}
@@ -90,8 +90,10 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	public ResponseEntity<OrderRequest> order(Order order) {
 		log.info("Placing order: {}", order);
 		OrderRequest request = order;
-		return orderServer.exchange(order.getUrl(),
-				HttpMethod.POST, new HttpEntity<>(request, headers), OrderRequest.class);
+		String url = order.getClient().getBaseUrl();
+		log.info("Placing order: {}", order);
+		return orderServer.exchange(url, HttpMethod.POST,
+				new HttpEntity<>(request, headers), OrderRequest.class);
 	}
 
 }

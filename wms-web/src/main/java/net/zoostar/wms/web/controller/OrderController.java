@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
+import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.service.OrderService;
-import net.zoostar.wms.service.response.OrderResponse;
-import net.zoostar.wms.web.request.OrderRequest;
 
 @Slf4j
 @RestController
