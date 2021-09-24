@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
-import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
@@ -38,12 +37,6 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	
 	@Autowired
 	private TestDataRepositories<Client> clients;
-	
-	@Autowired
-	protected TestDataRepositories<OrderRequest> orders;
-	
-	@Autowired
-	protected TestDataRepositories<Customer> customers;
 	
 	@Autowired
 	private OrderService orderManager;
