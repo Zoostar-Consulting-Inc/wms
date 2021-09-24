@@ -11,11 +11,12 @@
 	<packaging>war</packaging>
 	<properties>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.exclusions>src/main/webapp/resources/theme-default/**</sonar.exclusions>
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<maven.deploy.skip>true</maven.deploy.skip>
+		<jacoco.skip>false</jacoco.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -24,6 +25,7 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
+			<!-- Explicitly required for Sonar Code Coverage -->
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>wms-entity</artifactId>
 			<version>${project.parent.version}</version>

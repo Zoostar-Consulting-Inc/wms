@@ -18,11 +18,12 @@
     	<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<sonar.projectKey>Zoostar-Consulting-Inc_wms</sonar.projectKey>
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<aggregate.report.dir>wms-web/target/site/jacoco-aggregate</aggregate.report.dir>
+		<jacoco.skip>true</jacoco.skip>
 	</properties>
 	<modules>
 		<module>wms-entity</module>
@@ -177,7 +178,7 @@
 		<system>JIRA</system>
 		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
 	</issueManagement>
-	<name>WMS</name>
+	<name>wms-parent</name>
 	<inceptionYear>2021</inceptionYear>
 	<description>Warehouse Management System</description>
 	<ciManagement>
