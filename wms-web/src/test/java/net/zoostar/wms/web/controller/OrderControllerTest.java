@@ -1,12 +1,14 @@
 package net.zoostar.wms.web.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
@@ -26,6 +28,7 @@ import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
+import net.zoostar.wms.service.response.OrderResponse;
 import net.zoostar.wms.web.request.OrderRequest;
 
 class OrderControllerTest extends AbstractControllerTestContext {
@@ -46,7 +49,7 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	private OrderService orderManager;
 	
 	@Test
-	void testOrderSubmitSuccess2() throws Exception {
+	void testOrderSubmitSuccess() throws Exception {
 		//GIVEN
 		var url = "/order/submit";
 		
@@ -112,7 +115,36 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    		accept(MediaType.APPLICATION_JSON_VALUE)).
 	    		andReturn();
 	    
-		//THEN
-		assertNotNull(result);
+	    //THEN
+	    assertNotEquals(inboundRequest, null);
+	    assertNotNull(result);
+	    var response = result.getResponse();
+	    assertNotNull(response);
+	    assertEquals(HttpStatus.OK.value(), response.getStatus());
+	    log.debug("Raw response: {}", response.getContentAsString());
+	    Collection<OrderResponse> orderResponses = mapper.readValue(response.getContentAsString(),
+	    		mapper.getTypeFactory().constructCollectionType(Collection.class, OrderResponse.class));
+	    assertNotNull(orderResponses);
+	    for(OrderResponse actual : orderResponses) {
+	    	assertNotNull(actual);
+	    }
+
+//	    for(String assetId : expected.getAssetIds()) {
+//			assertTrue(actual.getResponses().containsKey(asseetId));
+//			assertEquals(HttpStatus.OK, actual.getResponses().get(asseetId));
+//		}
+//		
+//		var sameCase = actual;
+//		assertEquals(sameCase, actual);
+
+		assertEquals("1", client.getId());
+		assertEquals("United Terminal Service", client.getName());
+		assertFalse(client.isNew());
+		assertNotNull(client.toString());
+		
+		var clientNext = new Client();
+		clientNext.setCode("PEDEX");
+		assertTrue(clientNext.isNew());
+		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
 	}
 }
