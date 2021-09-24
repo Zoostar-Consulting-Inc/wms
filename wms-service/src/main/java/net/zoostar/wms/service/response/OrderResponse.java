@@ -1,6 +1,8 @@
 
 package net.zoostar.wms.service.response;
 
+import java.util.Objects;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,5 +34,22 @@ public class OrderResponse extends OrderRequest {
 		setUserId(order.getUserId());
 		this.clientCode = clientCode;
 		this.status = response.getStatusCode();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(clientCode);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!super.equals(obj)) {
+			return false;
+		}
+		OrderResponse other = (OrderResponse) obj;
+		return Objects.equals(clientCode, other.clientCode);
 	}
 }
