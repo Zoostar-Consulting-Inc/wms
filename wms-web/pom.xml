@@ -16,7 +16,6 @@
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<maven.deploy.skip>true</maven.deploy.skip>
-		<jacoco.skip>false</jacoco.skip>
 	</properties>
 	<dependencies>
 		<dependency>
