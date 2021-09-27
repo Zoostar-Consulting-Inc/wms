@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.CustomerRepository;
-import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
 
 @Slf4j

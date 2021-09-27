@@ -1,6 +1,6 @@
 package net.zoostar.wms.service;
 
-import net.zoostar.wms.model.User;
+import net.zoostar.wms.entity.User;
 
 public interface UserService {
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.entity.Customer;
 
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, String> {
 	Optional<Customer> findByEmail(String email);

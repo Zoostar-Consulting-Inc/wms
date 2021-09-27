@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import net.zoostar.wms.dao.UserRepository;
-import net.zoostar.wms.model.User;
+import net.zoostar.wms.entity.User;
 import net.zoostar.wms.service.UserService;
 
 @Service

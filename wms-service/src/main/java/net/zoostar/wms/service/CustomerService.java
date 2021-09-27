@@ -2,7 +2,7 @@ package net.zoostar.wms.service;
 
 import java.util.Set;
 
-import net.zoostar.wms.model.Customer;
+import net.zoostar.wms.entity.Customer;
 
 public interface CustomerService {
 	Customer retrieveByEmail(String email);
