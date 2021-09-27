@@ -91,7 +91,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		log.info("Placing order: {}", order);
 		OrderRequest request = order;
 		String url = order.getClient().getBaseUrl();
-		log.info("Placing order: {}", order);
 		return orderServer.exchange(url, HttpMethod.POST,
 				new HttpEntity<>(request, headers), OrderRequest.class);
 	}
