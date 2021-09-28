@@ -15,19 +15,21 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    	<java.version>11</java.version>
+		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<sonar.projectKey>Zoostar-Consulting-Inc_wms</sonar.projectKey>
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<aggregate.report.dir>wms-web/target/site/jacoco-aggregate</aggregate.report.dir>
+		<aggregate.report.dir>wms-test/target/site/jacoco-aggregate</aggregate.report.dir>
 	</properties>
 	<modules>
 		<module>wms-entity</module>
 		<module>wms-service</module>
 		<module>wms-web</module>
+		<module>wms-test</module>
+		<module>wms-war</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -53,13 +55,13 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-			        <groupId>org.apache.maven.plugins</groupId>
-			        <artifactId>maven-jar-plugin</artifactId>
-			        <version>3.2.0</version>
-			        <configuration>
-			        	<skipIfEmpty>true</skipIfEmpty>
-			        </configuration>
-        		</plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<skipIfEmpty>true</skipIfEmpty>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -69,15 +71,6 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.4</version>
-					<executions>
-						<execution>
-							<id>report-aggregate</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>report-aggregate</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -124,18 +117,25 @@
 							</rules>
 						</configuration>
 					</execution>
+					<execution>
+						<id>report-aggregate</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
 	<distributionManagement>
-	    <repository>
-	        <id>central</id>
+		<repository>
+			<id>central</id>
 			<name>zoostar-libs-release</name>
 			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
-   	    </repository>
-	    <snapshotRepository>
-	        <id>snapshots</id>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
 			<name>zoostar-libs-snapshot</name>
 			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
 		</snapshotRepository>
@@ -177,7 +177,7 @@
 		<system>JIRA</system>
 		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
 	</issueManagement>
-	<name>wms-parent</name>
+	<name>WMS</name>
 	<inceptionYear>2021</inceptionYear>
 	<description>Warehouse Management System</description>
 	<ciManagement>
