@@ -22,12 +22,11 @@
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<aggregate.report.dir>wms-web/target/site/jacoco-aggregate</aggregate.report.dir>
 	</properties>
 	<modules>
-		<module>wms-entity</module>
-		<module>wms-service</module>
 		<module>wms-web</module>
+		<module>wms-service</module>
+		<module>wms-entity</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -68,65 +67,10 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.4</version>
-					<executions>
-						<execution>
-							<id>report-aggregate</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>report-aggregate</goal>
-							</goals>
-						</execution>
-					</executions>
+					<version>0.8.7</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<configuration>
-					<append>true</append>
-				</configuration>
-				<executions>
-					<execution>
-						<id>prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<rule>
-									<element>CLASS</element>
-									<excludes>
-										<exclude>*Test</exclude>
-									</excludes>
-									<limits>
-										<limit>
-											<counter>LINE</counter>
-											<value>COVEREDRATIO</value>
-											<minimum>90%</minimum>
-										</limit>
-									</limits>
-								</rule>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
 	</build>
 	<distributionManagement>
 	    <repository>

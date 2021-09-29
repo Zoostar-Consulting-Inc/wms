@@ -11,7 +11,7 @@
 	<packaging>war</packaging>
 	<properties>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-		<sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<sonar.exclusions>src/main/webapp/resources/theme-default/**</sonar.exclusions>
 		<build.number>${user.name}</build.number>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
@@ -20,12 +20,6 @@
 		<dependency>
 			<groupId>${project.parent.groupId}</groupId>
 			<artifactId>wms-service</artifactId>
-			<version>${project.parent.version}</version>
-		</dependency>
-		<dependency>
-			<!-- Explicitly required for Sonar Code Coverage -->
-			<groupId>${project.parent.groupId}</groupId>
-			<artifactId>wms-entity</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
@@ -81,6 +75,59 @@
 	<build>
 		<finalName>wms</finalName>
 		<plugins>
+			<plugin> <!-- jacoco-maven-plugin -->
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+			            <id>report</id>
+			            <phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>default-check</id>
+						<phase>test</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>CLASS</element>
+									<excludes>
+										<exclude>*Test</exclude>
+									</excludes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>90%</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+					<execution>
+						<id>report-aggregate</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin> <!-- maven-war-plugin -->
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
