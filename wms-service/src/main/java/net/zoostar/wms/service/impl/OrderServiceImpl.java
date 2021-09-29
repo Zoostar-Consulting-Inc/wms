@@ -66,7 +66,9 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		var splitOrders = splitOrder(order);
 		var responses = new HashSet<OrderResponse>(splitOrders.size());
 		for(Entry<Client, Order> entry : splitOrders.entrySet()) {
-			var response = order(entry.getValue());
+			var client = entry.getKey();
+			log.info("Placing order for client: {}", client);
+			var response = order(client.getBaseUrl(), entry.getValue());
 			log.info("Response received: {}", response);
 			responses.add(new OrderResponse(response, entry.getKey().getCode()));
 		}
@@ -87,10 +89,8 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	}
 
 	@Override
-	public ResponseEntity<OrderRequest> order(Order order) {
-		log.info("Placing order: {}", order);
-		OrderRequest request = order;
-		String url = order.getClient().getBaseUrl();
+	public ResponseEntity<OrderRequest> order(String url, OrderRequest request) {
+		log.info("Placing order request: {}", request);
 		return orderServer.exchange(url, HttpMethod.POST,
 				new HttpEntity<>(request, headers), OrderRequest.class);
 	}
