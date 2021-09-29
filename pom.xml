@@ -70,6 +70,13 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<append>true</append>
 				</configuration>
@@ -119,9 +126,8 @@
 						</goals>
 					</execution>
 				</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+			</plugin>
+		</plugins>
 	</build>
 	<distributionManagement>
 	    <repository>
