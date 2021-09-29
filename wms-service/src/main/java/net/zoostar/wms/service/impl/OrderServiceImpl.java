@@ -67,7 +67,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		var responses = new HashSet<OrderResponse>(splitOrders.size());
 		for(Entry<Client, Order> entry : splitOrders.entrySet()) {
 			var client = entry.getKey();
-			log.info("Placing order for client: {}", client);
 			var response = order(client.getBaseUrl(), entry.getValue());
 			log.info("Response received: {}", response);
 			responses.add(new OrderResponse(response, entry.getKey().getCode()));
