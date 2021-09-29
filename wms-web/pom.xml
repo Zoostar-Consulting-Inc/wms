@@ -88,7 +88,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
+			<plugin> <!-- jacoco-maven-plugin -->
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.4</version>
@@ -101,9 +101,9 @@
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<propertyName>surefireArgLine</propertyName>
-						</configuration>
+<!-- 						<configuration> -->
+<!-- 							<propertyName>surefireArgLine</propertyName> -->
+<!-- 						</configuration> -->
 					</execution>
 					<execution>
 						<id>report</id>
@@ -112,7 +112,7 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -147,15 +147,6 @@
 					</execution>
 				</executions>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <!-- Sets the VM argument line used when unit tests are run. -->
-                    <argLine>${surefireArgLine}</argLine>
-                </configuration>
-            </plugin>
 		</plugins>
 	</build>
 </project>
