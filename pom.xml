@@ -23,7 +23,10 @@
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
 		<aggregate.report.dir>wms-web/target/site/jacoco-aggregate</aggregate.report.dir>
-		<sonar.coverage.jacoco.xmlReportPaths>${aggregate.report.dir}/../jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${aggregate.report.dir}/../jacoco/jacoco.xml,
+			${aggregate.report.dir}/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<modules>
 		<module>wms-web</module>
@@ -66,13 +69,68 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
 				</plugin>
-				<plugin>
+				<plugin> <!-- jacoco-maven-plugin -->
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.7</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+			            <id>coverage-report</id>
+			            <phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>coverage-check</id>
+						<phase>test</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>CLASS</element>
+									<excludes>
+										<exclude>*Test</exclude>
+									</excludes>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>90%</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+					<execution>
+						<id>report-aggregate</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 	<distributionManagement>
 	    <repository>
