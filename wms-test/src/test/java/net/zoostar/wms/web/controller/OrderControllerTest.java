@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.outbound.Order;
 import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
@@ -96,7 +97,12 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		
 		var orders = orderManager.splitOrder(inboundRequest);
 		log.info("Order split into: {}", orders.size());
+		Order orderPrevious = null;
 		for(var order : orders.entrySet()) {
+			assertNotEquals(order.getValue(), orderPrevious);
+			assertNotEquals(order.getValue().hashCode(), orderPrevious == null ? 0l : orderPrevious.hashCode());
+			orderPrevious = order.getValue();
+			assertEquals(order.getValue(), orderPrevious);
 			when(restTemplate.exchange(order.getValue().getClient().getBaseUrl(),
 					HttpMethod.POST, new HttpEntity<>(order.getValue(), orderManager.getHeaders()), OrderRequest.class)).
 						thenReturn(new ResponseEntity<OrderRequest>(order.getValue(), HttpStatus.OK));
@@ -119,8 +125,13 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    Collection<OrderResponse> orderResponses = mapper.readValue(response.getContentAsString(),
 	    		mapper.getTypeFactory().constructCollectionType(Collection.class, OrderResponse.class));
 	    assertNotNull(orderResponses);
+	    OrderResponse actualPrevious = null;
 	    for(OrderResponse actual : orderResponses) {
 	    	assertNotNull(actual);
+	    	assertNotNull(actual.toString());
+	    	assertNotEquals(actual, actualPrevious);
+	    	actualPrevious = actual;
+	    	assertEquals(actual, actualPrevious);
 	    	assertEquals(caseDate, actual.getCaseDate());
 	    	assertEquals(caseId, actual.getCaseId());
 	    	assertEquals(client.getCode(), actual.getClientCode());
@@ -138,6 +149,8 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var clientNext = new Client();
 		clientNext.setCode("PEDEX");
 		assertTrue(clientNext.isNew());
+		assertNotEquals(client, clientNext);
 		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
+		assertNotNull(clientNext.toString());
 	}
 }
