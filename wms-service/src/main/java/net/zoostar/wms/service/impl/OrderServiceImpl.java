@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,11 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderUpdateRequest;
 import net.zoostar.wms.api.outbound.Order;
 import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
@@ -48,8 +51,12 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 	@Autowired
 	protected UserService userManager;
 	
+	@Value("${order.update.server.url")
+	protected String orderUpdateServerUrl;
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		Assert.hasLength(orderUpdateServerUrl, "Order Update Server URL may not be empty!");
 		initHttpHeaders();
 	}
 	
@@ -92,6 +99,13 @@ public class OrderServiceImpl implements OrderService, InitializingBean {
 		log.info("Placing order request: {}", request);
 		return orderServer.exchange(url, HttpMethod.POST,
 				new HttpEntity<>(request, headers), OrderRequest.class);
+	}
+
+	@Override
+	public ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request) {
+		log.info("Updating order status: {}", request);
+		return orderServer.exchange(orderUpdateServerUrl, HttpMethod.POST,
+				new HttpEntity<>(request, headers), OrderUpdateRequest.class);
 	}
 
 }

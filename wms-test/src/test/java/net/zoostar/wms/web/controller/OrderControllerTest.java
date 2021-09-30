@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderUpdateRequest;
+import net.zoostar.wms.api.outbound.Order;
 import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
@@ -41,6 +44,9 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	@Autowired
 	private OrderService orderManager;
 	
+	@Value("${order.update.server.url")
+	protected String orderUpdateServerUrl;
+
 	@Test
 	void testOrderSubmitSuccess() throws Exception {
 		//GIVEN
@@ -96,7 +102,12 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		
 		var orders = orderManager.splitOrder(inboundRequest);
 		log.info("Order split into: {}", orders.size());
+		Order orderPrevious = null;
 		for(var order : orders.entrySet()) {
+			assertNotEquals(order.getValue(), orderPrevious);
+			assertNotEquals(order.getValue().hashCode(), orderPrevious == null ? 0l : orderPrevious.hashCode());
+			orderPrevious = order.getValue();
+			assertEquals(order.getValue(), orderPrevious);
 			when(restTemplate.exchange(order.getValue().getClient().getBaseUrl(),
 					HttpMethod.POST, new HttpEntity<>(order.getValue(), orderManager.getHeaders()), OrderRequest.class)).
 						thenReturn(new ResponseEntity<OrderRequest>(order.getValue(), HttpStatus.OK));
@@ -119,8 +130,13 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    Collection<OrderResponse> orderResponses = mapper.readValue(response.getContentAsString(),
 	    		mapper.getTypeFactory().constructCollectionType(Collection.class, OrderResponse.class));
 	    assertNotNull(orderResponses);
+	    OrderResponse actualPrevious = null;
 	    for(OrderResponse actual : orderResponses) {
 	    	assertNotNull(actual);
+	    	assertNotNull(actual.toString());
+	    	assertNotEquals(actual, actualPrevious);
+	    	actualPrevious = actual;
+	    	assertEquals(actual, actualPrevious);
 	    	assertEquals(caseDate, actual.getCaseDate());
 	    	assertEquals(caseId, actual.getCaseId());
 	    	assertEquals(client.getCode(), actual.getClientCode());
@@ -138,6 +154,50 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		var clientNext = new Client();
 		clientNext.setCode("PEDEX");
 		assertTrue(clientNext.isNew());
+		assertNotEquals(client, clientNext);
 		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
+		assertNotNull(clientNext.toString());
+	}
+	
+	@Test
+	void testOrderUpdateSuccess() throws Exception {
+		//GIVEN
+		String url = "/order/update";
+		var request = new OrderUpdateRequest();
+		request.setCaseId("1");
+		request.setStatus("O");
+		request.setUcn("00011080");
+		Set<String> assetIds = new TreeSet<>();
+		assetIds.add("FE28888");
+		assetIds.add("FE18888");
+		request.setAssetIds(assetIds);
+		
+		//MOCK-WHEN
+		when(restTemplate.exchange(orderUpdateServerUrl,
+				HttpMethod.POST, new HttpEntity<>(request, orderManager.getHeaders()), OrderUpdateRequest.class)).
+					thenReturn(new ResponseEntity<OrderUpdateRequest>(request, HttpStatus.OK));
+
+		var result = mockMvc.perform(post(url).
+	    		contentType(MediaType.APPLICATION_JSON_VALUE).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andReturn();
+		
+		//THEN
+		assertNotNull(result);
+	    var response = result.getResponse();
+	    assertNotNull(response);
+	    assertEquals(HttpStatus.OK.value(), response.getStatus());
+	    OrderUpdateRequest actual = mapper.readValue(response.getContentAsString(), OrderUpdateRequest.class);
+		assertEquals(request, actual);
+		assertEquals(request.hashCode(), actual.hashCode());
+		
+		var other = new OrderUpdateRequest();
+		other.setCaseId("2");
+		assertNotEquals(other, actual);
+		
+		var same = actual;
+		assertEquals(same, actual);
+		assertNotEquals(same, null);
 	}
 }

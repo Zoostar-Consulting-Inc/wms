@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderUpdateRequest;
 import net.zoostar.wms.api.outbound.Order;
 import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
@@ -20,5 +21,7 @@ public interface OrderService {
 	ResponseEntity<OrderRequest> order(String url, OrderRequest request);
 	
 	HttpHeaders getHeaders();
+
+	ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request);
 
 }
