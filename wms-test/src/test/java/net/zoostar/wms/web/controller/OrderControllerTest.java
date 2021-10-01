@@ -189,6 +189,7 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    assertNotNull(response);
 	    assertEquals(HttpStatus.OK.value(), response.getStatus());
 	    OrderUpdateRequest actual = mapper.readValue(response.getContentAsString(), OrderUpdateRequest.class);
+	    log.info("Response received: {}", actual.toString());
 		assertEquals(request, actual);
 		assertEquals(request.hashCode(), actual.hashCode());
 		
