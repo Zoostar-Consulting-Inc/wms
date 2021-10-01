@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import net.zoostar.wms.api.inbound.CustomerSearchRequest;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.TestDataRepositories;
-import net.zoostar.wms.web.request.CustomerSearchRequest;
 
 class CustomerControllerTest extends AbstractControllerTestContext {
 	

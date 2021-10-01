@@ -12,12 +12,14 @@ import net.zoostar.wms.entity.Client;
 public class Order extends OrderRequest {
 	
 	private Client client;
+	
+	private String clientUcn;
 
 	public Order() {
 		super();
 	}
 	
-	public Order(Client client, OrderRequest order) {
+	public Order(Client client, String clientUcn, OrderRequest order) {
 		this();
 		this.client = client;
 		setCaseDate(order.getCaseDate());
