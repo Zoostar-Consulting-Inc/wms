@@ -16,6 +16,7 @@ import java.util.TreeSet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.api.inbound.OrderRequest;
+import net.zoostar.wms.api.inbound.OrderUpdateRequest;
 import net.zoostar.wms.api.outbound.Order;
 import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
@@ -42,6 +44,9 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	@Autowired
 	private OrderService orderManager;
 	
+	@Value("${order.update.server.url")
+	protected String orderUpdateServerUrl;
+
 	@Test
 	void testOrderSubmitSuccess() throws Exception {
 		//GIVEN
@@ -152,5 +157,48 @@ class OrderControllerTest extends AbstractControllerTestContext {
 		assertNotEquals(client, clientNext);
 		assertTrue("Expected: " + client.compareTo(clientNext), client.compareTo(clientNext) > 0);
 		assertNotNull(clientNext.toString());
+	}
+	
+	@Test
+	void testOrderUpdateSuccess() throws Exception {
+		//GIVEN
+		String url = "/order/update";
+		var request = new OrderUpdateRequest();
+		request.setCaseId("1");
+		request.setStatus("O");
+		request.setUcn("00011080");
+		Set<String> assetIds = new TreeSet<>();
+		assetIds.add("FE28888");
+		assetIds.add("FE18888");
+		request.setAssetIds(assetIds);
+		
+		//MOCK-WHEN
+		when(restTemplate.exchange(orderUpdateServerUrl,
+				HttpMethod.POST, new HttpEntity<>(request, orderManager.getHeaders()), OrderUpdateRequest.class)).
+					thenReturn(new ResponseEntity<OrderUpdateRequest>(request, HttpStatus.OK));
+
+		var result = mockMvc.perform(post(url).
+	    		contentType(MediaType.APPLICATION_JSON_VALUE).
+	    		content(mapper.writeValueAsString(request)).
+	    		accept(MediaType.APPLICATION_JSON_VALUE)).
+	    		andReturn();
+		
+		//THEN
+		assertNotNull(result);
+	    var response = result.getResponse();
+	    assertNotNull(response);
+	    assertEquals(HttpStatus.OK.value(), response.getStatus());
+	    OrderUpdateRequest actual = mapper.readValue(response.getContentAsString(), OrderUpdateRequest.class);
+	    log.info("Response received: {}", actual.toString());
+		assertEquals(request, actual);
+		assertEquals(request.hashCode(), actual.hashCode());
+		
+		var other = new OrderUpdateRequest();
+		other.setCaseId("2");
+		assertNotEquals(other, actual);
+		
+		var same = actual;
+		assertEquals(same, actual);
+		assertNotEquals(same, null);
 	}
 }

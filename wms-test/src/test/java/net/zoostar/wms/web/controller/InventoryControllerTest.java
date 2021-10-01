@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import net.zoostar.wms.api.inbound.InventorySearchRequest;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.TestDataRepositories;
-import net.zoostar.wms.web.request.InventorySearchRequest;
 
 class InventoryControllerTest extends AbstractControllerTestContext {
 	
