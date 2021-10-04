@@ -91,7 +91,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 		for(String assetId : order.getAssetIds()) {
 			Inventory inventory = inventoryManager.retrieveByAssetId(assetId);
 			Client client = clientManager.retrieveByUcn(inventory.getHomeUcn());
-			var splitOrder = orders.computeIfAbsent(client, k -> new Order(client, inventory.getHomeUcn(), order));
+			var splitOrder = orders.computeIfAbsent(client, k -> new Order(client, order));
 			orders.put(client, splitOrder);
 			splitOrder.getAssetIds().add(assetId);
 		}
