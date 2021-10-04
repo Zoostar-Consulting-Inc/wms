@@ -19,7 +19,7 @@ public class Order extends OrderRequest {
 		super();
 	}
 	
-	public Order(Client client, String clientUcn, OrderRequest order) {
+	public Order(Client client, OrderRequest order) {
 		this();
 		this.client = client;
 		setCaseDate(order.getCaseDate());

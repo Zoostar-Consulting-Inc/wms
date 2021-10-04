@@ -16,8 +16,6 @@ public interface OrderService {
 
 	ResponseEntity<OrderRequest> order(OrderRequest request);
 
-//	ResponseEntity<OrderRequest> order(String url, OrderRequest request);
-	
 	HttpHeaders getHeaders();
 
 	ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request);
