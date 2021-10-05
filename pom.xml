@@ -133,20 +133,17 @@
 	<distributionManagement>
 	    <repository>
 	        <id>central</id>
-			<name>zoostar-libs-release</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
    	    </repository>
 	    <snapshotRepository>
 	        <id>snapshots</id>
-			<name>zoostar-libs-snapshot</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>central</id>
-			<name>zoostar-libs-release</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -156,8 +153,7 @@
 		</repository>
 		<repository>
 			<id>snapshots</id>
-			<name>zoostar-libs-snapshots</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
