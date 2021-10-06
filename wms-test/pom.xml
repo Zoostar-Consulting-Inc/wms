@@ -9,6 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<properties>
+		<jacoco.skip>false</jacoco.skip>
 		<sonar.exclusions>../wms-war/src/main/webapp/resources/theme-default/**</sonar.exclusions>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<maven.deploy.skip>true</maven.deploy.skip>

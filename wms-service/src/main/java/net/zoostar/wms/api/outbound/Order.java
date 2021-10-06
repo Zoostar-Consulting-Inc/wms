@@ -12,6 +12,8 @@ import net.zoostar.wms.entity.Client;
 public class Order extends OrderRequest {
 	
 	private Client client;
+	
+	private String clientUcn;
 
 	public Order() {
 		super();

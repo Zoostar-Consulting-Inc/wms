@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +25,6 @@ import org.springframework.http.ResponseEntity;
 import net.zoostar.wms.api.inbound.OrderRequest;
 import net.zoostar.wms.api.inbound.OrderUpdateRequest;
 import net.zoostar.wms.api.outbound.Order;
-import net.zoostar.wms.api.outbound.OrderResponse;
 import net.zoostar.wms.entity.Client;
 import net.zoostar.wms.entity.ClientDetail;
 import net.zoostar.wms.entity.Inventory;
@@ -99,7 +97,6 @@ class OrderControllerTest extends AbstractControllerTestContext {
 					thenReturn(Optional.of(testClientDetails.get(inventory.getHomeUcn())));
 		}
 		
-		
 		var orders = orderManager.splitOrder(inboundRequest);
 		log.info("Order split into: {}", orders.size());
 		Order orderPrevious = null;
@@ -127,24 +124,15 @@ class OrderControllerTest extends AbstractControllerTestContext {
 	    assertNotNull(response);
 	    assertEquals(HttpStatus.OK.value(), response.getStatus());
 	    log.debug("Raw response: {}", response.getContentAsString());
-	    Collection<OrderResponse> orderResponses = mapper.readValue(response.getContentAsString(),
-	    		mapper.getTypeFactory().constructCollectionType(Collection.class, OrderResponse.class));
-	    assertNotNull(orderResponses);
-	    OrderResponse actualPrevious = null;
-	    for(OrderResponse actual : orderResponses) {
-	    	assertNotNull(actual);
-	    	assertNotNull(actual.toString());
-	    	assertNotEquals(actual, actualPrevious);
-	    	actualPrevious = actual;
-	    	assertEquals(actual, actualPrevious);
-	    	assertEquals(caseDate, actual.getCaseDate());
-	    	assertEquals(caseId, actual.getCaseId());
-	    	assertEquals(client.getCode(), actual.getClientCode());
-	    	assertEquals(customerUcn, actual.getCustomerUcn());
-	    	assertEquals(userId, actual.getUserId());
-	    	assertEquals(sortedAssetIds, actual.getAssetIds());
-	    	assertEquals(HttpStatus.OK, actual.getStatus());
-	    }
+	    OrderRequest actual = mapper.readValue(
+	    		response.getContentAsString(), OrderRequest.class);
+	    assertNotNull(actual);
+    	assertNotNull(actual.toString());
+    	assertEquals(caseDate, actual.getCaseDate());
+    	assertEquals(caseId, actual.getCaseId());
+    	assertEquals(customerUcn, actual.getCustomerUcn());
+    	assertEquals(userId, actual.getUserId());
+    	assertEquals(sortedAssetIds, actual.getAssetIds());
 
 		assertEquals("1", client.getId());
 		assertEquals("United Terminal Service", client.getName());

@@ -23,6 +23,7 @@
 		<sonar.organization>zoostar-consulting-inc</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<aggregate.report.dir>wms-test/target/site/jacoco-aggregate</aggregate.report.dir>
+		<jacoco.skip>true</jacoco.skip>
 	</properties>
 	<modules>
 		<module>wms-entity</module>
@@ -71,15 +72,6 @@
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
 					<version>0.8.4</version>
-					<executions>
-						<execution>
-							<id>report-aggregate</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>report-aggregate</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -99,12 +91,21 @@
 					</execution>
 					<execution>
 						<id>report</id>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
 					</execution>
 					<execution>
+						<id>report-aggregate</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report-aggregate</goal>
+						</goals>
+					</execution>
+					<execution>
 						<id>default-check</id>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>check</goal>
 						</goals>
@@ -133,20 +134,17 @@
 	<distributionManagement>
 	    <repository>
 	        <id>central</id>
-			<name>zoostar-libs-release</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
    	    </repository>
 	    <snapshotRepository>
 	        <id>snapshots</id>
-			<name>zoostar-libs-snapshot</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>central</id>
-			<name>zoostar-libs-release</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -156,8 +154,7 @@
 		</repository>
 		<repository>
 			<id>snapshots</id>
-			<name>zoostar-libs-snapshots</name>
-			<url>https://zoostar.jfrog.io/artifactory/maven-quickstart</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
