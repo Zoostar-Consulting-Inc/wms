@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 	protected UserService userManager;
 
 	@Autowired
-	protected RestTemplate orderServer;
+	protected RestTemplate orderHost;
 
 	@Value("${order.update.server.url")
 	protected String orderUpdateServerUrl;
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 	@Override
 	public ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request) {
 		log.info("Updating order status: {}", request);
-		return orderServer.exchange(orderUpdateServerUrl, HttpMethod.POST,
+		return orderHost.exchange(orderUpdateServerUrl, HttpMethod.POST,
 				new HttpEntity<>(request, headers), OrderUpdateRequest.class);
 	}
 

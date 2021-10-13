@@ -34,7 +34,9 @@
 	
 	<bean id="mapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 	
-	<bean id="orderServer" class="org.springframework.web.client.RestTemplate" />
+	<bean id="orderHost" class="org.springframework.web.client.RestTemplate" />
+	
+	<task:executor id="orderExecutor" pool-size="2-3" queue-capacity="10" />
 	
 	<beans profile="test">
 		<context:property-placeholder location="classpath:app.properties, classpath:test/env.properties" />
