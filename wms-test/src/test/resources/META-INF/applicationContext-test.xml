@@ -24,6 +24,10 @@
 
 	<mvc:default-servlet-handler />
 	
+	<mvc:interceptors>
+		<bean class="net.zoostar.wms.web.interceptor.RequestTimerLoggingInterceptor" />
+	</mvc:interceptors>
+	
 	<task:annotation-driven />
 	
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
