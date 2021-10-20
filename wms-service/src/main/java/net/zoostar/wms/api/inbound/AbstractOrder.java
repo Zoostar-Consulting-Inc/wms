@@ -25,17 +25,14 @@ public abstract class AbstractOrder {
 	}
 
 	@Override
-	public boolean equals(Object that) {
-		if (this == that) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (that == null) {
+		if (!(obj instanceof AbstractOrder)) {
 			return false;
 		}
-		if (getClass() != that.getClass()) {
-			return false;
-		}
-		AbstractOrder other = (AbstractOrder) that;
+		AbstractOrder other = (AbstractOrder) obj;
 		return Objects.equals(caseId, other.caseId);
 	}
 }
