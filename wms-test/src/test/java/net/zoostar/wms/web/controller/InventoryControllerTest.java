@@ -22,7 +22,7 @@ import net.zoostar.wms.api.inbound.InventorySearchRequest;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.TestDataRepositories;
 
-class InventoryControllerTest extends AbstractControllerTestContext {
+class InventoryControllerTest extends AbstractControllerTestContext<Inventory> {
 	
 	@Autowired
 	protected TestDataRepositories<Inventory> repositories;
@@ -64,7 +64,7 @@ class InventoryControllerTest extends AbstractControllerTestContext {
 		assertFalse(StringUtils.isBlank(actual.getAssetId()));
 		assertEquals(expected.getAssetId(), actual.getAssetId());
 		assertEquals(expected.getSku(), actual.getSku());
-		assertEquals(expected.getSource(), actual.getSource());
+		assertEquals(expected.getSourceCode(), actual.getSourceCode());
 		assertEquals(expected.getQuantity(), actual.getQuantity());
 		assertEquals(expected.getHomeUcn(), actual.getHomeUcn());
 		assertEquals(expected.getCurrentUcn(), actual.getCurrentUcn());

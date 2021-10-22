@@ -1,8 +1,8 @@
 package net.zoostar.wms.service.impl;
 
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class InventoryServiceImpl implements InventoryService {
 	@Override
 	public Set<Inventory> search(Set<String> searchTerms) {
 		log.info("Search by: {}", searchTerms.toString());
-		Set<Inventory> inventories = new TreeSet<>();
+		Set<Inventory> inventories = new LinkedHashSet<>();
 		for(String searchTerm : searchTerms) {
 			if(searchTerm.endsWith("*")) {
 				inventories.addAll(inventoryRepository.findByAssetIdStartsWith(searchTerm.substring(0, searchTerm.length()-1)));

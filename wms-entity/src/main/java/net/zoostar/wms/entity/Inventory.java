@@ -1,7 +1,5 @@
 package net.zoostar.wms.entity;
 
-import java.util.Objects;
-
 import javax.persistence.Entity;
 
 import lombok.Getter;
@@ -12,7 +10,7 @@ import lombok.ToString;
 @Setter
 @Entity
 @ToString
-public class Inventory extends AbstractMultiSourceStringPersistable implements Comparable<Inventory> {
+public class Inventory extends AbstractMultiSourceStringPersistable {
 
 	private String assetId;
 	
@@ -23,27 +21,5 @@ public class Inventory extends AbstractMultiSourceStringPersistable implements C
 	private String currentUcn;
 	
 	private int quantity;
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(assetId);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!super.equals(obj)) {
-			return false;
-		}
-		Inventory other = (Inventory) obj;
-		return Objects.equals(assetId, other.assetId);
-	}
-
-	@Override
-	public int compareTo(Inventory that) {
-		return this.assetId.compareTo(that.assetId);
-	}
 
 }

@@ -31,7 +31,7 @@ import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
 
-class OrderControllerTest extends AbstractControllerTestContext {
+class OrderControllerTest extends AbstractControllerTestContext<Order> {
 
 	@Autowired
 	private TestDataRepositories<Inventory> inventories;

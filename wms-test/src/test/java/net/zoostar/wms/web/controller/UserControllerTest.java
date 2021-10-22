@@ -17,7 +17,7 @@ import net.zoostar.wms.api.inbound.UserSearchRequest;
 import net.zoostar.wms.entity.User;
 import net.zoostar.wms.service.TestDataRepositories;
 
-class UserControllerTest extends AbstractControllerTestContext {
+class UserControllerTest extends AbstractControllerTestContext<User> {
 	
 	@Autowired
 	protected TestDataRepositories<User> repositories;
@@ -51,12 +51,11 @@ class UserControllerTest extends AbstractControllerTestContext {
 		assertEquals(expected, actual);
 		assertEquals(expected.hashCode(), actual.hashCode());
 		assertEquals(expected.getUserId(), actual.getUserId());
-		assertEquals(0, expected.compareTo(actual));
 		assertNotNull(actual.toString());
 		
 		var unexpected = repositories.getRepository(User.class).
 				entrySet().stream().findAny().get().getValue();
-		unexpected.setSource("xyz");
+		unexpected.setSourceCode("xyz");
 		assertNotEquals(unexpected, actual);
 	}
 

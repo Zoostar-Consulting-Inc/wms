@@ -22,7 +22,7 @@ import net.zoostar.wms.api.inbound.CustomerSearchRequest;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.TestDataRepositories;
 
-class CustomerControllerTest extends AbstractControllerTestContext {
+class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	
 	@Autowired
 	protected TestDataRepositories<Customer> repositories;
@@ -65,7 +65,8 @@ class CustomerControllerTest extends AbstractControllerTestContext {
 		assertFalse(StringUtils.isBlank(actual.getEmail()));
 		assertEquals(expected.getEmail(), actual.getEmail());
 		assertEquals(expected.getLocationId(), actual.getLocationId());
-		assertEquals(expected.getSource(), actual.getSource());
+		assertEquals(expected.getSourceCode(), actual.getSourceCode());
+		assertEquals(expected.getSourceId(), actual.getSourceId());
 		assertEquals(expected.getName(), actual.getName());
 	}
 
