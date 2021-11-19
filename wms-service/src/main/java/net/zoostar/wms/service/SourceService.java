@@ -1,12 +1,13 @@
 package net.zoostar.wms.service;
 
-import net.zoostar.wms.entity.Customer;
+import org.springframework.http.ResponseEntity;
+
 import net.zoostar.wms.entity.Source;
 
 public interface SourceService<T> {
 
 	Source retrieve(String sourceCode);
 
-	Customer retrieve(String sourceCode, String sourceId, Class<T> clazz);
+	ResponseEntity<T> retrieve(String sourceCode, String sourceId, Class<T> clazz);
 
 }

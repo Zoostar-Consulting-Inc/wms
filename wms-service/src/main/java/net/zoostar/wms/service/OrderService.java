@@ -2,7 +2,6 @@ package net.zoostar.wms.service;
 
 import java.util.Map;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import net.zoostar.wms.api.inbound.OrderRequest;
@@ -15,8 +14,6 @@ public interface OrderService {
 	Map<Client, Order> splitOrder(OrderRequest order);
 
 	ResponseEntity<OrderRequest> order(OrderRequest request);
-
-	HttpHeaders getHeaders();
 
 	ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request);
 

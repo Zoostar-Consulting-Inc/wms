@@ -30,6 +30,7 @@ import net.zoostar.wms.entity.ClientDetail;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.TestDataRepositories;
+import net.zoostar.wms.utils.Utils;
 
 class OrderControllerTest extends AbstractControllerTestContext<Order> {
 
@@ -106,7 +107,7 @@ class OrderControllerTest extends AbstractControllerTestContext<Order> {
 			orderPrevious = order.getValue();
 			assertEquals(order.getValue(), orderPrevious);
 			when(restTemplate.exchange(order.getValue().getClient().getBaseUrl(),
-					HttpMethod.POST, new HttpEntity<>(order.getValue(), orderManager.getHeaders()), OrderRequest.class)).
+					HttpMethod.POST, new HttpEntity<>(order.getValue(), Utils.getHttpHeaders()), OrderRequest.class)).
 						thenReturn(new ResponseEntity<OrderRequest>(order.getValue(), HttpStatus.OK));
 		}
 		
@@ -162,7 +163,7 @@ class OrderControllerTest extends AbstractControllerTestContext<Order> {
 		
 		//MOCK-WHEN
 		when(restTemplate.exchange(orderUpdateServerUrl,
-				HttpMethod.POST, new HttpEntity<>(request, orderManager.getHeaders()), OrderUpdateRequest.class)).
+				HttpMethod.POST, new HttpEntity<>(request, Utils.getHttpHeaders()), OrderUpdateRequest.class)).
 					thenReturn(new ResponseEntity<OrderUpdateRequest>(request, HttpStatus.OK));
 
 		var result = mockMvc.perform(post(url).

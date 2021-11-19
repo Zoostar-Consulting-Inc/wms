@@ -60,7 +60,8 @@ public class CustomerServiceImpl implements CustomerService {
 		Optional<Customer> customer = customerRepository.findBySourceCodeAndSourceId(sourceCode, sourceId);
 		if(customer.isEmpty()) {
 			throw new NoSuchElementException(
-					"No customer found for sourceCode and sourceId " + sourceCode + " " + sourceId);
+					String.format("No customer found for sourceCode: [%s] and sourceId: [%s]", sourceCode, sourceId)
+			);
 		}
 		return customer.get();
 	}
@@ -76,6 +77,21 @@ public class CustomerServiceImpl implements CustomerService {
 			entity = customerRepository.save(customer);
 		}
 		return entity;
+	}
+
+	@Override
+	public Customer update(Customer customer) {
+		if(customer.isNew()) {
+			throw new NoSuchElementException(String.format(
+					"No entity found to update for: %s", customer.toString()));
+		} else {
+			return customerRepository.save(customer);
+		}
+	}
+
+	@Override
+	public void delete(String id) {
+		customerRepository.deleteById(id);
 	}
 	
 }

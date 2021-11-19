@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(callSuper = true)
 public class Customer extends AbstractMultiSourceStringPersistable {
 
 	private String email;

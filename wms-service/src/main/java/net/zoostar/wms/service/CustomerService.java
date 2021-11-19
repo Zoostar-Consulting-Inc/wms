@@ -9,4 +9,6 @@ public interface CustomerService {
 	Customer retrieveByEmail(String email);
 	Set<Customer> search(Set<String> searchTerms);
 	Customer retrieveBySourceCodeAndSourceId(String sourceCode, String sourceId);
+	Customer update(Customer customer);
+	void delete(String id);
 }

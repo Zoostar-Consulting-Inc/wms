@@ -23,8 +23,8 @@ import net.zoostar.wms.dao.ClientDetailsRepository;
 import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
+import net.zoostar.wms.dao.SourceRepository;
 import net.zoostar.wms.dao.UserRepository;
-import net.zoostar.wms.service.SourceService;
 
 @WebAppConfiguration
 @ActiveProfiles({"test"})
@@ -54,10 +54,10 @@ public abstract class AbstractControllerTestContext<T> {
 	protected ClientDetailsRepository clientDetailsRepository;
 	
 	@MockBean
-	protected RestTemplate restTemplate;
+	protected SourceRepository sourceRepository;
 	
 	@MockBean
-	protected SourceService<T> sourceManager;
+	protected RestTemplate restTemplate;
 	
 	@Autowired
 	protected WebApplicationContext wac;
