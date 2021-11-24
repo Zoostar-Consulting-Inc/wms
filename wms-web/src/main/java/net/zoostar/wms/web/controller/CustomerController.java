@@ -81,7 +81,6 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 	}
 
 	protected Customer delete(Customer customer) {
-		customerManager.delete(customer.getId());
-		return customer;
+		return customerManager.delete(customer.getId());
 	}
 }

@@ -5,24 +5,24 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.EntityExistsException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
 
 @Slf4j
+@Getter
 @Service
 @Transactional
-public class CustomerServiceImpl implements CustomerService {
+public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer, String> implements CustomerService {
 
 	@Autowired
-	protected CustomerRepository customerRepository;
+	protected CustomerRepository repository;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
 		Set<Customer> customers = new LinkedHashSet<>();
 		for(String searchTerm : searchTerms) {
 			if(searchTerm.endsWith("*")) {
-				customers.addAll(customerRepository.findByEmailStartsWith(searchTerm.substring(0, searchTerm.length()-1)));
+				customers.addAll(repository.findByEmailStartsWith(searchTerm.substring(0, searchTerm.length()-1)));
 			} else {
 				try {
 					customers.add(retrieveByEmail(searchTerm));
@@ -47,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Transactional(readOnly = true)
 	public Customer retrieveByEmail(String email) {
 		log.info("Search for email: {}...", email);
-		var entity = customerRepository.findByEmail(email);
+		var entity = repository.findByEmail(email);
 		if(entity.isEmpty()) {
 			throw new NoSuchElementException("No customer found for email: " + email);
 		}
@@ -57,7 +57,7 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	@Transactional(readOnly = true)
 	public Customer retrieveBySourceCodeAndSourceId(String sourceCode, String sourceId) {
-		Optional<Customer> customer = customerRepository.findBySourceCodeAndSourceId(sourceCode, sourceId);
+		Optional<Customer> customer = repository.findBySourceCodeAndSourceId(sourceCode, sourceId);
 		if(customer.isEmpty()) {
 			throw new NoSuchElementException(
 					String.format("No customer found for sourceCode: [%s] and sourceId: [%s]", sourceCode, sourceId)
@@ -67,31 +67,20 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer create(Customer customer) {
+	protected Customer findByKey(Customer customer) {
 		Customer entity = null;
 		try {
-			entity = retrieveBySourceCodeAndSourceId(customer.getSourceCode(), customer.getSourceId());
-			throw new EntityExistsException("Entity exists for Source Code and Id: " +
-					customer.getSourceCode() + " " + customer.getSourceId());
+			entity = retrieveBySourceCodeAndSourceId(
+					customer.getSourceCode(), customer.getSourceId());
 		} catch(NoSuchElementException e) {
-			entity = customerRepository.save(customer);
+			log.info(e.getMessage());
 		}
 		return entity;
 	}
 
 	@Override
-	public Customer update(Customer customer) {
-		if(customer.isNew()) {
-			throw new NoSuchElementException(String.format(
-					"No entity found to update for: %s", customer.toString()));
-		} else {
-			return customerRepository.save(customer);
-		}
+	protected Class<Customer> getClazz() {
+		return Customer.class;
 	}
 
-	@Override
-	public void delete(String id) {
-		customerRepository.deleteById(id);
-	}
-	
 }
