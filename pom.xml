@@ -6,6 +6,10 @@
 	<artifactId>wms-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
+	<name>WMS</name>
+	<inceptionYear>2021</inceptionYear>
+	<description>Warehouse Management System</description>
+	<url>https://sonarcloud.io/dashboard?id=Zoostar-Consulting-Inc_wms</url>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -51,6 +55,28 @@
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release-local</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>snapshots</id>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot-local</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -133,35 +159,13 @@
 	<distributionManagement>
 	    <repository>
 	        <id>central</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-release-local</url>
    	    </repository>
 	    <snapshotRepository>
 	        <id>snapshots</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
+			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot-local</url>
 		</snapshotRepository>
 	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-release</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>snapshots</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<organization>
 		<name>Zoostar Consulting, Inc.</name>
 	</organization>
@@ -175,12 +179,8 @@
 		<system>JIRA</system>
 		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
 	</issueManagement>
-	<name>WMS</name>
-	<inceptionYear>2021</inceptionYear>
-	<description>Warehouse Management System</description>
 	<ciManagement>
 		<system>GitHub Actions</system>
 		<url>https://github.com/Zoostar-Consulting-Inc/wms/actions</url>
 	</ciManagement>
-	<url>https://sonarcloud.io/dashboard?id=Zoostar-Consulting-Inc_wms</url>
 </project>
