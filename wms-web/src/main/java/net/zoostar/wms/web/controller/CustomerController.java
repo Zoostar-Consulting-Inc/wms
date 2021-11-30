@@ -47,35 +47,44 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 	@PostMapping(value = "/update/{sourceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Customer> update(@PathVariable String sourceCode, @RequestParam String sourceId) {
 		ResponseEntity<Customer> response = null;
+		Customer customer = null;
 		try {
-			var customer = customerManager.retrieveBySourceCodeAndSourceId(sourceCode, sourceId);
+			customer = customerManager.retrieveBySourceCodeAndSourceId(sourceCode, sourceId);
 			response = update(customer);
 		} catch(NoSuchElementException e) {
 			log.info(e.getMessage());
-			response = create(sourceCode, sourceId);
+			customer = create(sourceCode, sourceId);
+			response = new ResponseEntity<>(customer, HttpStatus.CREATED);
 		}
+		postUpdateListener(customer);
 		return response;
 	}
 
-	protected ResponseEntity<Customer> create(String sourceCode, String sourceId) {
+	protected void postUpdateListener(Customer customer) {
+		
+	}
+
+	protected Customer create(String sourceCode, String sourceId) {
+		Customer customer = null;
 		var response = sourceManager.retrieve(sourceCode, sourceId, Customer.class);
 		if(response.getStatusCode() == HttpStatus.OK) {
-			Customer customer = response.getBody();
-			response = new ResponseEntity<>(customerManager.create(customer), HttpStatus.CREATED);
+			customer = response.getBody();
+			customer = customerManager.create(customer);
 		}
-		return response;
+		return customer;
 	}
 
-	protected ResponseEntity<Customer> update(Customer customer) {
+	protected ResponseEntity<Customer> update(Customer entity) {
 		ResponseEntity<Customer> response = null;
 		response = sourceManager.retrieve(
-				customer.getSourceCode(), customer.getSourceId(), Customer.class);
+				entity.getSourceCode(), entity.getSourceId(), Customer.class);
 		if(response.getStatusCode() == HttpStatus.OK) {
-			response.getBody().setId(customer.getId());
-			response = new ResponseEntity<>(customerManager.update(
-					response.getBody()), HttpStatus.OK);
+			var customer = response.getBody();
+			customer.setId(entity.getId());
+			response = new ResponseEntity<>(
+					customerManager.update(customer), HttpStatus.OK);
 		} else {
-			response = new ResponseEntity<>(delete(customer), HttpStatus.OK);
+			response = new ResponseEntity<>(delete(entity), HttpStatus.OK);
 		}
 		return response;
 	}

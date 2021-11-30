@@ -24,6 +24,12 @@ public abstract class AbstractStringPersistable implements Persistable<String> {
 	@GeneratedValue(generator="uuid")
 	@GenericGenerator(name="uuid", strategy="uuid2")
 	private String id;
+	
+	@Column
+	private boolean active;
+	
+	@Column
+	private long update;
 
 	@JsonIgnore
 	@Override

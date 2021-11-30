@@ -18,14 +18,13 @@ import net.zoostar.wms.service.CustomerService;
 @Slf4j
 @Getter
 @Service
-@Transactional
-public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer, String> implements CustomerService {
+@Transactional(readOnly = true)
+public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer> implements CustomerService {
 
 	@Autowired
 	protected CustomerRepository repository;
 
 	@Override
-	@Transactional(readOnly = true)
 	public Set<Customer> search(Set<String> searchTerms) {
 		log.info("Search by: {}", searchTerms.toString());
 		Set<Customer> customers = new LinkedHashSet<>();
@@ -44,7 +43,6 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Customer retrieveByEmail(String email) {
 		log.info("Search for email: {}...", email);
 		var entity = repository.findByEmail(email);
@@ -55,7 +53,6 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Customer retrieveBySourceCodeAndSourceId(String sourceCode, String sourceId) {
 		Optional<Customer> customer = repository.findBySourceCodeAndSourceId(sourceCode, sourceId);
 		if(customer.isEmpty()) {
@@ -67,7 +64,7 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 	}
 
 	@Override
-	protected Customer findByKey(Customer customer) {
+	public Customer retrieveByKey(Customer customer) {
 		Customer entity = null;
 		try {
 			entity = retrieveBySourceCodeAndSourceId(
