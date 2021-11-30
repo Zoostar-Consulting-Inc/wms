@@ -78,7 +78,7 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 		ResponseEntity<Customer> response = null;
 		response = sourceManager.retrieve(
 				entity.getSourceCode(), entity.getSourceId(), Customer.class);
-		if(response.getStatusCode() == HttpStatus.OK) {
+		if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
 			var customer = response.getBody();
 			customer.setId(entity.getId());
 			response = new ResponseEntity<>(
