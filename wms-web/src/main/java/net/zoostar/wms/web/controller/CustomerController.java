@@ -60,10 +60,6 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 		return response;
 	}
 
-	protected void postUpdateListener(Customer customer) {
-		
-	}
-
 	protected Customer create(String sourceCode, String sourceId) {
 		Customer customer = null;
 		var response = sourceManager.retrieve(sourceCode, sourceId, Customer.class);
@@ -78,8 +74,8 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 		ResponseEntity<Customer> response = null;
 		response = sourceManager.retrieve(
 				entity.getSourceCode(), entity.getSourceId(), Customer.class);
-		if(response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
-			var customer = response.getBody();
+		Customer customer = null;
+		if(response.getStatusCode() == HttpStatus.OK && (customer = response.getBody()) != null) {
 			customer.setId(entity.getId());
 			response = new ResponseEntity<>(
 					customerManager.update(customer), HttpStatus.OK);
@@ -91,5 +87,9 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 
 	protected Customer delete(Customer customer) {
 		return customerManager.delete(customer.getId());
+	}
+
+	protected void postUpdateListener(Customer customer) {
+		
 	}
 }
