@@ -303,6 +303,9 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		
 		when(customerRepository.findById(expected.getId())).
 			thenReturn(Optional.of(expected));
+		
+		when(customerRepository.save(expected)).
+			thenReturn(expected);
 
 		var response = mockMvc.perform(post(url).
 				param("sourceId", sourceId).

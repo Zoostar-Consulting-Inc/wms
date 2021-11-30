@@ -15,6 +15,23 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.3</version>
 	</parent>
+	<organization>
+		<name>Zoostar Consulting, Inc.</name>
+	</organization>
+	<scm>
+		<url>https://github.com/Zoostar-Consulting-Inc/wms</url>
+		<developerConnection>devops@zoostar.net</developerConnection>
+		<tag>master</tag>
+		<connection>https://github.com/Zoostar-Consulting-Inc/wms</connection>
+	</scm>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
+	</issueManagement>
+	<ciManagement>
+		<system>GitHub Actions</system>
+		<url>https://github.com/Zoostar-Consulting-Inc/wms/actions</url>
+	</ciManagement>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -55,28 +72,6 @@
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-release-local</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>snapshots</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot-local</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -156,31 +151,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<distributionManagement>
-	    <repository>
-	        <id>central</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-release-local</url>
-   	    </repository>
-	    <snapshotRepository>
-	        <id>snapshots</id>
-			<url>https://zoostar.jfrog.io/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<organization>
-		<name>Zoostar Consulting, Inc.</name>
-	</organization>
-	<scm>
-		<url>https://github.com/Zoostar-Consulting-Inc/wms</url>
-		<developerConnection>devops@zoostar.net</developerConnection>
-		<tag>master</tag>
-		<connection>https://github.com/Zoostar-Consulting-Inc/wms</connection>
-	</scm>
-	<issueManagement>
-		<system>JIRA</system>
-		<url>https://zoostar.atlassian.net/jira/software/projects/HC/boards/8</url>
-	</issueManagement>
-	<ciManagement>
-		<system>GitHub Actions</system>
-		<url>https://github.com/Zoostar-Consulting-Inc/wms/actions</url>
-	</ciManagement>
 </project>
