@@ -90,6 +90,6 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 	}
 
 	protected void postUpdateListener(Customer customer) {
-		
+		// To be implemented, if needed, by extending classes
 	}
 }

@@ -62,7 +62,7 @@ implements StringPersistableCrudService<T> {
 		Optional<T> optional = getRepository().findById(id);
 		if(optional.isEmpty()) {
 			throw new NoSuchElementException(String.format(
-					"No entity found to delete by id: %s", id.toString()));
+					"No entity found to delete by id: %s", id));
 		} else {
 			entity = optional.get();
 			entity.setActive(false);
