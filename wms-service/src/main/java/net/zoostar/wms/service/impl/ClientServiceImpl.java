@@ -1,6 +1,6 @@
 package net.zoostar.wms.service.impl;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ClientServiceImpl implements ClientService {
 	public Client retrieveByUcn(String ucn) {
 		var entity = clientDetailsRepository.findByUcn(ucn);
 		if(entity.isEmpty()) {
-			throw new NoSuchElementException("No Client Details found for UCN: " + ucn);
+			throw new EntityNotFoundException("No Client Details found for UCN: " + ucn);
 		}
 		var clientDetails = entity.get();
 		var client = clientDetails.getClient();

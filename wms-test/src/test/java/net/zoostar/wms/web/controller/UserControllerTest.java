@@ -60,7 +60,7 @@ class UserControllerTest extends AbstractControllerTestContext<User> {
 	}
 
 	@Test
-	void testNoSuchElementException() throws Exception {
+	void testEntityNotFoundException() throws Exception {
 		//GIVEN
 		var url = "/user/retrieve";
 		var entity = repositories.getRepository(User.class).

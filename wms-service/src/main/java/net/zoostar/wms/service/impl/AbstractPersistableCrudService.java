@@ -1,9 +1,9 @@
 package net.zoostar.wms.service.impl;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +48,7 @@ implements StringPersistableCrudService<T> {
 	@Override
 	public T update(T persistable) {
 		if(persistable.isNew() || getRepository().findById(persistable.getId()).isEmpty()) {
-			throw new NoSuchElementException(String.format(
+			throw new EntityNotFoundException(String.format(
 					"No entity found to update for: %s", persistable.toString()));
 		} else {
 			persistable.setUpdate(System.currentTimeMillis());
@@ -61,7 +61,7 @@ implements StringPersistableCrudService<T> {
 		T entity = null;
 		Optional<T> optional = getRepository().findById(id);
 		if(optional.isEmpty()) {
-			throw new NoSuchElementException(String.format(
+			throw new EntityNotFoundException(String.format(
 					"No entity found to delete by id: %s", id));
 		} else {
 			entity = optional.get();

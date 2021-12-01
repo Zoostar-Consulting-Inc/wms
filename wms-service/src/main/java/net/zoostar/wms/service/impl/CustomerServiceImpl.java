@@ -1,9 +1,10 @@
 package net.zoostar.wms.service.impl;
 
 import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 			} else {
 				try {
 					customers.add(retrieveByEmail(searchTerm));
-				} catch(NoSuchElementException e) {
+				} catch(EntityNotFoundException e) {
 					log.warn(e.getMessage());
 				}
 			}
@@ -47,7 +48,7 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 		log.info("Search for email: {}...", email);
 		var entity = repository.findByEmail(email);
 		if(entity.isEmpty()) {
-			throw new NoSuchElementException("No customer found for email: " + email);
+			throw new EntityNotFoundException("No customer found for email: " + email);
 		}
 		return entity.get();
 	}
@@ -56,7 +57,7 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 	public Customer retrieveBySourceCodeAndSourceId(String sourceCode, String sourceId) {
 		Optional<Customer> customer = repository.findBySourceCodeAndSourceId(sourceCode, sourceId);
 		if(customer.isEmpty()) {
-			throw new NoSuchElementException(
+			throw new EntityNotFoundException(
 					String.format("No customer found for sourceCode: [%s] and sourceId: [%s]", sourceCode, sourceId)
 			);
 		}
@@ -69,7 +70,7 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 		try {
 			entity = retrieveBySourceCodeAndSourceId(
 					customer.getSourceCode(), customer.getSourceId());
-		} catch(NoSuchElementException e) {
+		} catch(EntityNotFoundException e) {
 			log.info(e.getMessage());
 		}
 		return entity;

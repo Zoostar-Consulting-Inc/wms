@@ -71,7 +71,7 @@ class InventoryControllerTest extends AbstractControllerTestContext<Inventory> {
 	}
 
 	@Test
-	void testFindByAssetIdNoSuchElementException() throws Exception {
+	void testFindByAssetIdEntityNotFoundException() throws Exception {
 		String url = "/inventory/retrieve/assetId";
 		
 		//WHEN

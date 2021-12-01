@@ -1,7 +1,8 @@
 package net.zoostar.wms.web.controller;
 
-import java.util.NoSuchElementException;
 import java.util.Set;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,43 +47,37 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 	
 	@PostMapping(value = "/update/{sourceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Customer> update(@PathVariable String sourceCode, @RequestParam String sourceId) {
+		Customer entity = null;
 		ResponseEntity<Customer> response = null;
-		Customer customer = null;
 		try {
-			customer = customerManager.retrieveBySourceCodeAndSourceId(sourceCode, sourceId);
-			response = update(customer);
-		} catch(NoSuchElementException e) {
+			entity = customerManager.retrieveBySourceCodeAndSourceId(sourceCode, sourceId);
+			response = new ResponseEntity<>(update(entity), HttpStatus.OK);
+		} catch(EntityNotFoundException e) {
 			log.info(e.getMessage());
-			customer = create(sourceCode, sourceId);
-			response = new ResponseEntity<>(customer, HttpStatus.CREATED);
+			entity = create(sourceCode, sourceId);
+			response = new ResponseEntity<>(entity, HttpStatus.CREATED);
 		}
-		postUpdateListener(customer);
+		postUpdateListener(entity);
 		return response;
 	}
 
 	protected Customer create(String sourceCode, String sourceId) {
-		Customer customer = null;
-		var response = sourceManager.retrieve(sourceCode, sourceId, Customer.class);
-		if(response.getStatusCode() == HttpStatus.OK) {
-			customer = response.getBody();
-			customer = customerManager.create(customer);
-		}
-		return customer;
+		return customerManager.create(
+				sourceManager.retrieve(sourceCode, sourceId, Customer.class));
 	}
 
-	protected ResponseEntity<Customer> update(Customer entity) {
-		ResponseEntity<Customer> response = null;
-		response = sourceManager.retrieve(
-				entity.getSourceCode(), entity.getSourceId(), Customer.class);
+	protected Customer update(final Customer entity) {
 		Customer customer = null;
-		if(response.getStatusCode() == HttpStatus.OK && (customer = response.getBody()) != null) {
+		try {
+			customer = sourceManager.retrieve(
+					entity.getSourceCode(), entity.getSourceId(), Customer.class);
 			customer.setId(entity.getId());
-			response = new ResponseEntity<>(
-					customerManager.update(customer), HttpStatus.OK);
-		} else {
-			response = new ResponseEntity<>(delete(entity), HttpStatus.OK);
+			customer = customerManager.update(customer);
+		} catch(EntityNotFoundException e) {
+			log.info(e.getMessage());
+			customer = delete(entity);
 		}
-		return response;
+		return customer;
 	}
 
 	protected Customer delete(Customer customer) {

@@ -9,7 +9,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -17,6 +19,8 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,8 @@ import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.entity.Source;
 import net.zoostar.wms.service.SourceService;
 import net.zoostar.wms.service.TestDataRepositories;
+import net.zoostar.wms.service.impl.SourceServiceImpl;
+import net.zoostar.wms.utils.Utils;
 
 class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	
@@ -79,7 +85,7 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	}
 
 	@Test
-	void testFindByEmailNoSuchElementException() throws Exception {
+	void testFindByEmailEntityNotFoundException() throws Exception {
 		String url = "/customer/retrieve/email";
 		
 		//WHEN
@@ -177,8 +183,11 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		when(sourceRepository.findBySourceCode(sourceCode)).
 			thenReturn(Optional.of(source));
 		
-		when(sourceManager.retrieve(sourceCode, sourceId, Customer.class)).
-			thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
+		Map<String, String> request = new HashMap<>(1);
+		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
+		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
+				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
+					thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
 		
 		when(customerRepository.save(entity)).
 			thenReturn(expected);
@@ -240,8 +249,11 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		when(sourceRepository.findBySourceCode(sourceCode)).
 			thenReturn(Optional.of(source));
 		
-		when(sourceManager.retrieve(sourceCode, sourceId, Customer.class)).
-			thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
+		Map<String, String> request = new HashMap<>(1);
+		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
+		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
+				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
+					thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
 		
 		when(customerRepository.findBySourceCodeAndSourceId(sourceCode, sourceId)).
 			thenReturn(Optional.of(expected));
@@ -298,9 +310,6 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		when(sourceRepository.findBySourceCode(sourceCode)).
 			thenReturn(Optional.of(source));
 		
-		when(sourceManager.retrieve(sourceCode, sourceId, Customer.class)).
-			thenReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
-		
 		when(customerRepository.findBySourceCodeAndSourceId(sourceCode, sourceId)).
 			thenReturn(Optional.of(expected));
 		
@@ -309,6 +318,12 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		
 		when(customerRepository.save(expected)).
 			thenReturn(expected);
+		
+		Map<String, String> request = new HashMap<>(1);
+		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
+		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
+				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
+					thenReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
 
 		var response = mockMvc.perform(post(url).
 				param("sourceId", sourceId).

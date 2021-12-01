@@ -1,8 +1,9 @@
 package net.zoostar.wms.service.impl;
 
 import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class InventoryServiceImpl implements InventoryService {
 		log.info("Search for assetId: {}...", assetId);
 		var entity = inventoryRepository.findByAssetId(assetId);
 		if(entity.isEmpty()) {
-			throw new NoSuchElementException("No Inventory found for assetId: " + assetId);
+			throw new EntityNotFoundException("No Inventory found for assetId: " + assetId);
 		}
 		return entity.get();
 	}
@@ -41,7 +42,7 @@ public class InventoryServiceImpl implements InventoryService {
 			} else {
 				try {
 					inventories.add(retrieveByAssetId(searchTerm));
-				} catch(NoSuchElementException e) {
+				} catch(EntityNotFoundException e) {
 					log.warn(e.getMessage());
 				}
 			}

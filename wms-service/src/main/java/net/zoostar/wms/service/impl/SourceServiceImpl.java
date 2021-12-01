@@ -2,11 +2,13 @@ package net.zoostar.wms.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,19 +38,26 @@ public class SourceServiceImpl<T> implements SourceService<T> {
 		log.info("Retrieving by source code: {}", sourceCode);
 		var entity = sourceRepository.findBySourceCode(sourceCode);
 		if(entity.isEmpty()) {
-			throw new NoSuchElementException("No entity found for Source Code: " + sourceCode);
+			throw new EntityNotFoundException("No entity found for Source Code: " + sourceCode);
 		}
 		return entity.get();
 	}
 
 	@Override
-	public ResponseEntity<T> retrieve(String sourceCode, String sourceId, Class<T> clazz) {
+	public T retrieve(String sourceCode, String sourceId, Class<T> clazz) {
 		Source source = retrieve(sourceCode);
 		Map<String, String> request = new HashMap<>(1);
 		request.put(SOURCE_ID_KEY, sourceId);
 		log.info("Retrieving from source: {}...", source);
-		return restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
+		ResponseEntity<T> response = restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
 				new HttpEntity<>(request, Utils.getHttpHeaders()), clazz);
+		T entity = response.getBody();
+		if(HttpStatus.OK != response.getStatusCode() || entity == null) {
+			log.warn("Error encountered while fetching entity from source: {}", source);
+			log.warn("Response code: {}", response.getStatusCode());
+			throw new EntityNotFoundException("Error encountered while fetching entity from source: " + sourceCode);
+		}
+		return response.getBody();
 	}
 
 }
