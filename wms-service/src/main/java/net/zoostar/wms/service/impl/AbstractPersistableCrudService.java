@@ -26,21 +26,24 @@ import net.zoostar.wms.service.StringPersistableCrudService;
 public abstract class AbstractPersistableCrudService<T extends AbstractStringPersistable>
 implements StringPersistableCrudService<T> {
 
+	public abstract PagingAndSortingRepository<T, String> getRepository();
+
 	@Override
 	public T create(T persistable) {
-		log.info("Persisting {}...", persistable.toString());
-		if(persistable.isNew() && retrieveByKey(persistable) == null) {
-			persistable.setActive(true);
-			persistable.setUpdate(System.currentTimeMillis());
-			return getRepository().save(persistable);
+		if(!persistable.isNew()) {
+			throw new EntityExistsException(String.format("Entity exists: %s", persistable.toString()));
 		}
-		throw new EntityExistsException(String.format("Entity exists: %s", persistable.toString()));
+			
+		log.info("Persisting {}...", persistable.toString());
+		persistable.setActive(true);
+		persistable.setUpdate(System.currentTimeMillis());
+		return getRepository().save(persistable);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public Page<T> retrieve(int page, int size) {
-		log.info("Retrieving {} {} for page {}...", size, getClazz().getCanonicalName(), page);
+		log.info("Retrieving {} for page {}...", size, page);
 		Pageable pageable = PageRequest.of(page, size);
 		return getRepository().findAll(pageable);
 	}
@@ -71,8 +74,5 @@ implements StringPersistableCrudService<T> {
 		}
 		return entity;
 	}
-
-	public abstract PagingAndSortingRepository<T, String> getRepository();
-	protected abstract Class<T> getClazz();
 
 }

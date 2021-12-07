@@ -2,8 +2,6 @@ package net.zoostar.wms.web.controller;
 
 import java.util.Set;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,18 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.api.inbound.CustomerSearchRequest;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
-import net.zoostar.wms.service.SourceService;
+import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
 @RestController
 @RequestMapping("/customer")
-public class CustomerController extends AbstractCommonErrorHandler<Customer> {
+public class CustomerController extends AbstractCrudRestController<Customer> {
 
 	@Autowired
 	protected CustomerService customerManager;
-	
-	@Autowired
-	private SourceService<Customer> sourceManager;
 	
 	@GetMapping(value = "/retrieve/{email}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Customer> retrieveByEmail(@PathVariable String email) {
@@ -44,47 +39,28 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 		log.info("{}", "API triggered: /customer/search");
 		return new ResponseEntity<>(customerManager.search(request.getSearchTerms()), HttpStatus.OK);
 	}
-	
+
+	@Override
 	@PostMapping(value = "/update/{sourceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Customer> update(@PathVariable String sourceCode, @RequestParam String sourceId) {
-		Customer entity = null;
-		ResponseEntity<Customer> response = null;
-		try {
-			entity = customerManager.retrieveBySourceCodeAndSourceId(sourceCode, sourceId);
-			response = new ResponseEntity<>(update(entity), HttpStatus.OK);
-		} catch(EntityNotFoundException e) {
-			log.info(e.getMessage());
-			entity = create(sourceCode, sourceId);
-			response = new ResponseEntity<>(entity, HttpStatus.CREATED);
-		}
-		postUpdateListener(entity);
-		return response;
+		return super.update(sourceCode, sourceId);
 	}
 
-	protected Customer create(String sourceCode, String sourceId) {
-		return customerManager.create(
-				sourceManager.retrieve(sourceCode, sourceId, Customer.class));
+	@Override
+	protected StringPersistableCrudService<Customer> getCrudManager() {
+		return this.customerManager;
 	}
 
-	protected Customer update(final Customer entity) {
-		Customer customer = null;
-		try {
-			customer = sourceManager.retrieve(
-					entity.getSourceCode(), entity.getSourceId(), Customer.class);
-			customer.setId(entity.getId());
-			customer = customerManager.update(customer);
-		} catch(EntityNotFoundException e) {
-			log.info(e.getMessage());
-			customer = delete(entity);
-		}
+	@Override
+	protected Customer getPersistable(String sourceCode, String sourceId) {
+		var customer = new Customer();
+		customer.setSourceCode(sourceCode);
+		customer.setSourceId(sourceId);
 		return customer;
 	}
 
-	protected Customer delete(Customer customer) {
-		return customerManager.delete(customer.getId());
-	}
-
-	protected void postUpdateListener(Customer customer) {
-		// To be implemented, if needed, by extending classes
+	@Override
+	protected Class<Customer> getClazz() {
+		return Customer.class;
 	}
 }

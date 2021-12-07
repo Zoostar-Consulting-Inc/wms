@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
+import net.zoostar.wms.service.SourceService;
 
 @Slf4j
 @Getter
@@ -24,6 +25,9 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 
 	@Autowired
 	protected CustomerRepository repository;
+	
+	@Autowired
+	protected SourceService<Customer> sourceManager;
 
 	@Override
 	public Set<Customer> search(Set<String> searchTerms) {
@@ -55,30 +59,19 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 
 	@Override
 	public Customer retrieveBySourceCodeAndSourceId(String sourceCode, String sourceId) {
+		log.info("retrieveBySourceCodeAndSourceId(sourceCode: {}, sourceId: {}", sourceCode, sourceId);
 		Optional<Customer> customer = repository.findBySourceCodeAndSourceId(sourceCode, sourceId);
 		if(customer.isEmpty()) {
 			throw new EntityNotFoundException(
-					String.format("No customer found for sourceCode: [%s] and sourceId: [%s]", sourceCode, sourceId)
-			);
+					String.format("No customer found for sourceCode: [%s] and sourceId: [%s]", sourceCode, sourceId));
 		}
 		return customer.get();
 	}
 
 	@Override
 	public Customer retrieveByKey(Customer customer) {
-		Customer entity = null;
-		try {
-			entity = retrieveBySourceCodeAndSourceId(
-					customer.getSourceCode(), customer.getSourceId());
-		} catch(EntityNotFoundException e) {
-			log.info(e.getMessage());
-		}
-		return entity;
-	}
-
-	@Override
-	protected Class<Customer> getClazz() {
-		return Customer.class;
+		return retrieveBySourceCodeAndSourceId(
+				customer.getSourceCode(), customer.getSourceId());
 	}
 
 }

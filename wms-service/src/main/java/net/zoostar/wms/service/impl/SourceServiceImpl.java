@@ -38,7 +38,7 @@ public class SourceServiceImpl<T> implements SourceService<T> {
 		log.info("Retrieving by source code: {}", sourceCode);
 		var entity = sourceRepository.findBySourceCode(sourceCode);
 		if(entity.isEmpty()) {
-			throw new EntityNotFoundException("No entity found for Source Code: " + sourceCode);
+			throw new EntityNotFoundException("No Source found for Code: " + sourceCode);
 		}
 		return entity.get();
 	}
@@ -51,8 +51,7 @@ public class SourceServiceImpl<T> implements SourceService<T> {
 		log.info("Retrieving from source: {}...", source);
 		ResponseEntity<T> response = restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
 				new HttpEntity<>(request, Utils.getHttpHeaders()), clazz);
-		T entity = response.getBody();
-		if(HttpStatus.OK != response.getStatusCode() || entity == null) {
+		if(HttpStatus.OK != response.getStatusCode() || response.getBody() == null) {
 			log.warn("Error encountered while fetching entity from source: {}", source);
 			log.warn("Response code: {}", response.getStatusCode());
 			throw new EntityNotFoundException("Error encountered while fetching entity from source: " + sourceCode);
