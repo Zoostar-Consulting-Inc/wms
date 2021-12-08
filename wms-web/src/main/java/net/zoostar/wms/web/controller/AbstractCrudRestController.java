@@ -51,7 +51,7 @@ public abstract class AbstractCrudRestController<T extends AbstractMultiSourceSt
 				sourceManager.retrieve(sourceCode, sourceId, getClazz()));
 	}
 
-	protected T update(final T entity) {
+	protected T update(T entity) {
 		T persistable = null;
 		try {
 			persistable = sourceManager.retrieve(

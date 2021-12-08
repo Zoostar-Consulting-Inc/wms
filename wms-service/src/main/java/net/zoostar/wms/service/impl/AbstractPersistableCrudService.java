@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.zoostar.wms.entity.AbstractStringPersistable;
+import net.zoostar.wms.entity.AbstractMultiSourceStringPersistable;
 import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
@@ -23,10 +23,10 @@ import net.zoostar.wms.service.StringPersistableCrudService;
 @Setter
 @Service
 @Transactional
-public abstract class AbstractPersistableCrudService<T extends AbstractStringPersistable>
+public abstract class AbstractPersistableCrudService<T extends AbstractMultiSourceStringPersistable>
 implements StringPersistableCrudService<T> {
 
-	public abstract PagingAndSortingRepository<T, String> getRepository();
+	protected abstract PagingAndSortingRepository<T, String> getRepository();
 
 	@Override
 	public T create(T persistable) {
