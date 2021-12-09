@@ -39,6 +39,11 @@ public class CustomerController extends AbstractCrudRestController<Customer> {
 		log.info("{}", "API triggered: /customer/search");
 		return new ResponseEntity<>(customerManager.search(request.getSearchTerms()), HttpStatus.OK);
 	}
+	
+	@PostMapping(value = "/retrieve", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Customer> retrieve(Customer customer) {
+		return new ResponseEntity<>(super.retrieveByKey(customer), HttpStatus.OK);
+	}
 
 	@Override
 	@PostMapping(value = "/update/{sourceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
