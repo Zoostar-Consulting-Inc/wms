@@ -3,6 +3,8 @@ package net.zoostar.wms.web.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Properties;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -23,6 +25,7 @@ class IndexControllerTest {
 		indexController = new IndexController();
 		indexController.setEnv("test");
 		indexController.setMessage("Warehouse Management System (WMS)");
+		indexController.setProperties(new Properties());
 		indexController.afterPropertiesSet();
 	}
 	
