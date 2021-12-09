@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
-import net.zoostar.wms.service.SourceService;
 
 @Slf4j
 @Getter
@@ -25,9 +24,6 @@ public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer
 
 	@Autowired
 	protected CustomerRepository repository;
-	
-	@Autowired
-	protected SourceService<Customer> sourceManager;
 
 	@Override
 	public Set<Customer> search(Set<String> searchTerms) {
