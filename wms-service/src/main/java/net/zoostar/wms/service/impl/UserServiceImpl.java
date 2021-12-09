@@ -1,6 +1,6 @@
 package net.zoostar.wms.service.impl;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
 	public User retrieveByUserId(String userId) {
 		var entity = userRepository.findByUserId(userId);
 		if(entity.isEmpty()) {
-			throw new NoSuchElementException("No User found for user id: " + userId);
+			throw new EntityNotFoundException("No User found for user id: " + userId);
 		}
 		return entity.get();
 	}

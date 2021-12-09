@@ -23,6 +23,7 @@ import net.zoostar.wms.dao.ClientDetailsRepository;
 import net.zoostar.wms.dao.ClientRepository;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.dao.InventoryRepository;
+import net.zoostar.wms.dao.SourceRepository;
 import net.zoostar.wms.dao.UserRepository;
 
 @WebAppConfiguration
@@ -30,7 +31,7 @@ import net.zoostar.wms.dao.UserRepository;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(locations = {"classpath:META-INF/applicationContext-test.xml"})
-public abstract class AbstractControllerTestContext {
+public abstract class AbstractControllerTestContext<T> {
 	
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 	
@@ -51,6 +52,9 @@ public abstract class AbstractControllerTestContext {
 	
 	@MockBean
 	protected ClientDetailsRepository clientDetailsRepository;
+	
+	@MockBean
+	protected SourceRepository sourceRepository;
 	
 	@MockBean
 	protected RestTemplate restTemplate;

@@ -1,5 +1,6 @@
 package net.zoostar.wms.entity;
 
 public interface MultiSourceEntity {
-	void setSource(String source);
+	void setSourceCode(String sourceCode);
+	void setSourceId(String sourceId);
 }

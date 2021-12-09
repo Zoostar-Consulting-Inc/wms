@@ -4,17 +4,20 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<import resource="classpath:META-INF/datasource.xml"/>
 
 	<context:annotation-config />
-	<context:component-scan base-package="net.zoostar.wms.web, net.zoostar.wms.service" />
+	<context:component-scan base-package="net.zoostar.wms.web,
+			net.zoostar.wms.service" />
 	
 	<mvc:annotation-driven />
-<!-- 	<mvc:view-controller path="/" view-name="index" /> -->
+	<mvc:view-controller path="/" view-name="index" />
 	<mvc:view-controller path="/login" view-name="login"/>
 
 	<mvc:resources location="/resources/theme-default/" mapping="/resources/**" cache-period="86400"/>
@@ -22,12 +25,24 @@
 	<mvc:resources location="classpath:/META-INF/resources/" mapping="swagger-ui.html" />
 
 	<mvc:default-servlet-handler />
+		
+	<mvc:interceptors>
+		<bean class="net.zoostar.wms.web.interceptor.RequestTimerLoggingInterceptor" />
+	</mvc:interceptors>
+	
+	<task:annotation-driven />
 	
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:viewClass="org.springframework.web.servlet.view.JstlView"
 		p:prefix="/pages/"
 		p:suffix=".jsp"
 	/>
+		
+	<bean id="mapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
+	
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	
+	<task:executor id="orderExecutor" pool-size="2-3" queue-capacity="10" />
 	
 	<beans profile="dev">
 		<context:property-placeholder location="classpath:app.properties, classpath:dev/env.properties" />

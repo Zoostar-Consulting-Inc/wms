@@ -11,17 +11,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.api.inbound.OrderRequest;
 import net.zoostar.wms.api.inbound.OrderUpdateRequest;
@@ -33,15 +30,13 @@ import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.OrderExecutor;
 import net.zoostar.wms.service.OrderService;
 import net.zoostar.wms.service.UserService;
+import net.zoostar.wms.utils.Utils;
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService, InitializingBean, ApplicationContextAware {
 	
-	@Getter
-	protected HttpHeaders headers;
-
 	@Autowired
 	protected ClientService clientManager;
 
@@ -52,7 +47,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 	protected UserService userManager;
 
 	@Autowired
-	protected RestTemplate orderServer;
+	protected RestTemplate restTemplate;
 
 	@Value("${order.update.server.url")
 	protected String orderUpdateServerUrl;
@@ -62,15 +57,6 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.hasLength(orderUpdateServerUrl, "Order Update Server URL may not be empty!");
-		initHttpHeaders();
-	}
-	
-	protected void initHttpHeaders() {
-		log.info("{}", "Initializing HttpHeaders...");
-        headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.ACCEPT_ENCODING, "gzip");
-        log.info("HttpHeaders initialized: {}.", headers);
 	}
 	
 	@Override
@@ -79,7 +65,7 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 		for(Entry<Client, Order> entry : splitOrders.entrySet()) {
 			var client = entry.getKey();
 			var orderExecutor = context.getBean(OrderExecutor.class);
-			orderExecutor.order(client.getBaseUrl(), headers, entry.getValue());
+			orderExecutor.order(client.getBaseUrl(), Utils.getHttpHeaders(), entry.getValue());
 		}
 		return new ResponseEntity<>(order, HttpStatus.OK);
 	}
@@ -101,8 +87,8 @@ public class OrderServiceImpl implements OrderService, InitializingBean, Applica
 	@Override
 	public ResponseEntity<OrderUpdateRequest> update(OrderUpdateRequest request) {
 		log.info("Updating order status: {}", request);
-		return orderServer.exchange(orderUpdateServerUrl, HttpMethod.POST,
-				new HttpEntity<>(request, headers), OrderUpdateRequest.class);
+		return restTemplate.exchange(orderUpdateServerUrl, HttpMethod.POST,
+				new HttpEntity<>(request, Utils.getHttpHeaders()), OrderUpdateRequest.class);
 	}
 
 	@Override

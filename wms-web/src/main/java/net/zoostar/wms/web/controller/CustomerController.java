@@ -11,17 +11,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.api.inbound.CustomerSearchRequest;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
+import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
 @RestController
 @RequestMapping("/customer")
-public class CustomerController extends AbstractCommonErrorHandler<Customer> {
+public class CustomerController extends AbstractCrudRestController<Customer> {
 
 	@Autowired
 	protected CustomerService customerManager;
@@ -36,5 +38,29 @@ public class CustomerController extends AbstractCommonErrorHandler<Customer> {
 	public ResponseEntity<Set<Customer>> search(@RequestBody CustomerSearchRequest request) {
 		log.info("{}", "API triggered: /customer/search");
 		return new ResponseEntity<>(customerManager.search(request.getSearchTerms()), HttpStatus.OK);
+	}
+
+	@Override
+	@PostMapping(value = "/update/{sourceCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Customer> update(@PathVariable String sourceCode, @RequestParam String sourceId) {
+		return super.update(sourceCode, sourceId);
+	}
+
+	@Override
+	protected StringPersistableCrudService<Customer> getCrudManager() {
+		return this.customerManager;
+	}
+
+	@Override
+	protected Customer getPersistable(String sourceCode, String sourceId) {
+		var customer = new Customer();
+		customer.setSourceCode(sourceCode);
+		customer.setSourceId(sourceId);
+		return customer;
+	}
+
+	@Override
+	protected Class<Customer> getClazz() {
+		return Customer.class;
 	}
 }

@@ -17,11 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.api.inbound.InventorySearchRequest;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.InventoryService;
+import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
 @RestController
 @RequestMapping("/inventory")
-public class InventoryController extends AbstractCommonErrorHandler<Inventory> {
+public class InventoryController extends AbstractCrudRestController<Inventory> {
 
 	@Autowired
 	protected InventoryService inventoryManager;
@@ -36,5 +37,23 @@ public class InventoryController extends AbstractCommonErrorHandler<Inventory> {
 	public ResponseEntity<Set<Inventory>> search(@RequestBody InventorySearchRequest request) {
 		log.info("{}", "API triggered: /inventory/search");
 		return new ResponseEntity<>(inventoryManager.search(request.getSearchTerms()), HttpStatus.OK);
+	}
+
+	@Override
+	protected Class<Inventory> getClazz() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected StringPersistableCrudService<Inventory> getCrudManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected Inventory getPersistable(String sourceCode, String sourceId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

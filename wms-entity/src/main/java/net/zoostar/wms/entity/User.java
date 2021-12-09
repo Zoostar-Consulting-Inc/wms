@@ -12,14 +12,9 @@ import lombok.ToString;
 @Setter
 @Entity
 @ToString
-public class User extends AbstractMultiSourceStringPersistable implements Comparable<User> {
+public class User extends AbstractMultiSourceStringPersistable {
 
 	private String userId;
-
-	@Override
-	public int compareTo(User that) {
-		return this.userId.compareTo(that.getUserId());
-	}
 
 	@Override
 	public int hashCode() {
@@ -31,7 +26,13 @@ public class User extends AbstractMultiSourceStringPersistable implements Compar
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
 		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof User)) {
 			return false;
 		}
 		User other = (User) obj;

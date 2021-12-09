@@ -22,7 +22,7 @@ public class OrderUpdateRequest {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(caseId, assetIds);
+		return Objects.hash(assetIds, caseId);
 	}
 
 	@Override
@@ -30,13 +30,10 @@ public class OrderUpdateRequest {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (!(obj instanceof OrderUpdateRequest)) {
 			return false;
 		}
 		OrderUpdateRequest other = (OrderUpdateRequest) obj;
-		return Objects.equals(caseId, other.caseId) && Objects.equals(assetIds, other.assetIds);
+		return Objects.equals(assetIds, other.assetIds) && Objects.equals(caseId, other.caseId);
 	}
 }

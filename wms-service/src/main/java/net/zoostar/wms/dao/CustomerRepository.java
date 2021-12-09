@@ -10,4 +10,5 @@ import net.zoostar.wms.entity.Customer;
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, String> {
 	Optional<Customer> findByEmail(String email);
 	Collection<Customer> findByEmailStartsWith(String emailWildcard);
+	Optional<Customer> findBySourceCodeAndSourceId(String sourceCode, String sourceId);
 }

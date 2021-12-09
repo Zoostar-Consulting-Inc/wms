@@ -1,8 +1,10 @@
 package net.zoostar.wms.web.controller;
 
 import java.util.Map;
+import java.util.Properties;
 
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,9 @@ public class IndexController implements InitializingBean {
 	@Value("${message}")
 	protected String message;
 	
+	@Autowired
+	protected Properties properties;
+	
 	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
 	public ModelAndView index(Map<String, Object> model) {
 		log.info("{}", "Loading index page...");
@@ -33,6 +38,11 @@ public class IndexController implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		log.info("Loading {} in {} environment...", message, env);
+		log.info("Loading {} in {} environment with following properties...", message, env);
+		var keys = properties.propertyNames();
+		while(keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			log.info("{}: {}", key, properties.get(key));
+		}
 	}
 }
