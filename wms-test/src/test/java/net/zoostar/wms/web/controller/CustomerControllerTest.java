@@ -42,40 +42,6 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	protected SourceService<Customer> sourceManager;
 
 	@Test
-	void testRetrieveByKey() throws Exception {
-		var entity = repositories.getRepository(Customer.class).
-				entrySet().stream().findFirst();
-		var expected = entity.get().getValue();
-		
-		// given
-		String url = "/customer/retrieve";
-		var request = new Customer();
-		expected.setSourceCode(expected.getSourceCode());
-		expected.setSourceId(expected.getSourceId());
-		
-		// mock
-		when(customerRepository.findBySourceCodeAndSourceId(
-				request.getSourceCode(), request.getSourceId())).
-				thenReturn(Optional.of(expected));
-
-		// when
-	    var response = mockMvc.perform(post(url).
-	    		contentType(MediaType.APPLICATION_JSON).
-	    		content(mapper.writeValueAsString(request)).
-	    		accept(MediaType.APPLICATION_JSON)).
-	    		andReturn().getResponse();
-
-		// then
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		assertEquals(MediaType.APPLICATION_JSON_VALUE, response.getContentType());
-		log.info("Response received: {}", response.getContentAsString());
-		
-		var actual = mapper.readValue(response.getContentAsString(), Customer.class);
-		log.info("Retrieved entity: {}", actual);
-		assertEquals(expected, actual);
-	}
-	
-	@Test
 	void testFindByEmail() throws Exception {
 		//GIVEN
 		var entity = repositories.getRepository(Customer.class).
