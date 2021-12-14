@@ -23,11 +23,14 @@ public abstract class AbstractCrudRestController<T extends AbstractMultiSourceSt
 	protected abstract StringPersistableCrudService<T> getCrudManager();
 
 	protected abstract T getPersistable(String sourceCode, String sourceId);
+
+	protected T create(String sourceCode, String sourceId) {
+		return getCrudManager().create(
+				sourceManager.retrieve(sourceCode, sourceId, getClazz()));
+	}
 	
-	@ExceptionHandler(EntityNotFoundException.class)
-	protected ResponseEntity<T> handleExceptions(EntityNotFoundException e) {
-		log.warn(e.getMessage());
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	protected T retrieveByKey(T entity) {
+		return getCrudManager().retrieveByKey(entity);
 	}
 
 	protected ResponseEntity<T> update(String sourceCode, String sourceId) {
@@ -46,11 +49,6 @@ public abstract class AbstractCrudRestController<T extends AbstractMultiSourceSt
 		return response;
 	}
 
-	protected T create(String sourceCode, String sourceId) {
-		return getCrudManager().create(
-				sourceManager.retrieve(sourceCode, sourceId, getClazz()));
-	}
-
 	protected T update(T entity) {
 		T persistable = null;
 		try {
@@ -67,6 +65,12 @@ public abstract class AbstractCrudRestController<T extends AbstractMultiSourceSt
 
 	protected T delete(T entity) {
 		return getCrudManager().delete(entity.getId());
+	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+	protected ResponseEntity<T> handleExceptions(EntityNotFoundException e) {
+		log.warn(e.getMessage());
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
 	protected void postUpdateListener(T entity) {
