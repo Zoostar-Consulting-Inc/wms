@@ -5,10 +5,12 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<context:annotation-config />
 	<context:component-scan base-package="net.zoostar.wms.web,
@@ -38,7 +40,12 @@
 	
 	<bean id="mapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
 	
-	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate" />
+	<util:list id="interceptors" value-type="org.springframework.http.client.ClientHttpRequestInterceptor">
+		<bean class="net.zoostar.wms.web.interceptor.GZIPClientHttpRequestInterceptor" />
+	</util:list>
+	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+		<property name="interceptors" ref="interceptors" />
+	</bean>
 	
 	<task:executor id="orderExecutor" pool-size="2-3" queue-capacity="10" />
 	
