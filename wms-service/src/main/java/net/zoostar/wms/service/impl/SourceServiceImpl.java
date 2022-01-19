@@ -16,6 +16,8 @@ import org.springframework.web.client.RestTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.SourceRepository;
+import net.zoostar.wms.entity.AbstractMultiSourceStringPersistable;
+import net.zoostar.wms.entity.EntityWrapper;
 import net.zoostar.wms.entity.Source;
 import net.zoostar.wms.service.SourceService;
 import net.zoostar.wms.utils.Utils;
@@ -23,7 +25,8 @@ import net.zoostar.wms.utils.Utils;
 @Slf4j
 @Service
 @Transactional(readOnly = true)
-public class SourceServiceImpl<T> implements SourceService<T> {
+public class SourceServiceImpl<E extends EntityWrapper<T>, T extends AbstractMultiSourceStringPersistable>
+implements SourceService<E, T> {
 
 	public static final String SOURCE_ID_KEY = "sourceId";
 	
@@ -44,19 +47,23 @@ public class SourceServiceImpl<T> implements SourceService<T> {
 	}
 
 	@Override
-	public T retrieve(String sourceCode, String sourceId, Class<T> clazz) {
+	public ResponseEntity<E> retrieve(String sourceCode, String sourceId, Class<E> clazz) {
 		Source source = retrieve(sourceCode);
 		Map<String, String> request = new HashMap<>(1);
 		request.put(SOURCE_ID_KEY, sourceId);
 		log.info("Retrieving from source: {}...", source);
-		ResponseEntity<T> response = restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
+		var response = restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
 				new HttpEntity<>(request, Utils.getHttpHeaders()), clazz);
-		if(HttpStatus.OK != response.getStatusCode() || response.getBody() == null) {
-			log.warn("Error encountered while fetching entity from source: {}", source);
-			log.warn("Response code: {}", response.getStatusCode());
-			throw new EntityNotFoundException("Error encountered while fetching entity from source: " + sourceCode);
+		if(response.getStatusCode() == HttpStatus.NO_CONTENT) {
+			throw new EntityNotFoundException("No entity found at source.");
 		}
-		return response.getBody();
+		return response;
+	}
+
+	@Override
+	public E create(String sourceCode, String sourceId, Class<E> clazz) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -19,11 +19,12 @@ import net.zoostar.wms.api.inbound.CustomerSearchRequest;
 import net.zoostar.wms.entity.Customer;
 import net.zoostar.wms.service.CustomerService;
 import net.zoostar.wms.service.StringPersistableCrudService;
+import net.zoostar.wms.web.request.CustomerRequest;
 
 @Slf4j
 @RestController
 @RequestMapping("/customer")
-public class CustomerController extends AbstractCrudRestController<Customer> {
+public class CustomerController extends AbstractCrudRestController<CustomerRequest, Customer> {
 
 	@Autowired
 	protected CustomerService customerManager;
@@ -52,15 +53,16 @@ public class CustomerController extends AbstractCrudRestController<Customer> {
 	}
 
 	@Override
-	protected Customer getPersistable(String sourceCode, String sourceId) {
-		var customer = new Customer();
+	protected CustomerRequest toEntityWrapper(String sourceCode, String sourceId) {
+		var customer = new CustomerRequest();
 		customer.setSourceCode(sourceCode);
 		customer.setSourceId(sourceId);
 		return customer;
 	}
 
 	@Override
-	protected Class<Customer> getClazz() {
-		return Customer.class;
+	protected Class<CustomerRequest> getEntityWrapperClazz() {
+		return CustomerRequest.class;
 	}
+
 }

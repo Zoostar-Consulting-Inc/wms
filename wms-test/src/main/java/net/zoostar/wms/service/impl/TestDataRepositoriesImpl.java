@@ -1,6 +1,7 @@
 package net.zoostar.wms.service.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,10 +55,10 @@ public class TestDataRepositoriesImpl<T> implements TestDataRepositories<T>, Ini
 			log.info("Loading data for {}: {}", entityType, filename);
 			var type = mapper.getTypeFactory().
 					constructMapType(LinkedHashMap.class, String.class, entityType);
-			Map<String, T> repository = Collections.unmodifiableMap(mapper.readValue(
-					new ClassPathResource(path + "/" + filename).getInputStream(),
-					type));
-			repositories.put(entityType, repository);
+			try(InputStream is = new ClassPathResource(path + "/" + filename).getInputStream()) {
+				Map<String, T> repository = Collections.unmodifiableMap(mapper.readValue(is, type));
+				repositories.put(entityType, repository);
+			}
 		}
 	}
 }

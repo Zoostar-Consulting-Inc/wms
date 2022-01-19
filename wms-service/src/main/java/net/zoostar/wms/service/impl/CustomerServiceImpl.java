@@ -14,13 +14,14 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.dao.CustomerRepository;
 import net.zoostar.wms.entity.Customer;
+import net.zoostar.wms.entity.EntityWrapper;
 import net.zoostar.wms.service.CustomerService;
 
 @Slf4j
 @Getter
 @Service
 @Transactional(readOnly = true)
-public class CustomerServiceImpl extends AbstractPersistableCrudService<Customer> implements CustomerService {
+public class CustomerServiceImpl extends AbstractPersistableCrudService<EntityWrapper<Customer>, Customer> implements CustomerService {
 
 	@Autowired
 	protected CustomerRepository repository;
