@@ -14,11 +14,12 @@ import net.zoostar.wms.api.inbound.UserSearchRequest;
 import net.zoostar.wms.entity.User;
 import net.zoostar.wms.service.StringPersistableCrudService;
 import net.zoostar.wms.service.UserService;
+import net.zoostar.wms.web.request.UserRequest;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/user")
-public class UserController extends AbstractCrudRestController<User> {
+public class UserController extends AbstractCrudRestController<UserRequest, User> {
 
 	@Autowired
 	private UserService userManager;
@@ -31,7 +32,7 @@ public class UserController extends AbstractCrudRestController<User> {
 	}
 
 	@Override
-	protected Class<User> getClazz() {
+	protected Class<UserRequest> getEntityWrapperClazz() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -43,7 +44,7 @@ public class UserController extends AbstractCrudRestController<User> {
 	}
 
 	@Override
-	protected User getPersistable(String sourceCode, String sourceId) {
+	protected UserRequest toEntityWrapper(String sourceCode, String sourceId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

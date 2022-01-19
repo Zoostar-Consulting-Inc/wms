@@ -32,6 +32,7 @@ import net.zoostar.wms.service.SourceService;
 import net.zoostar.wms.service.TestDataRepositories;
 import net.zoostar.wms.service.impl.SourceServiceImpl;
 import net.zoostar.wms.utils.Utils;
+import net.zoostar.wms.web.request.CustomerRequest;
 
 class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	
@@ -39,7 +40,7 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 	protected TestDataRepositories<Customer> repositories;
 	
 	@Autowired
-	protected SourceService<Customer> sourceManager;
+	protected SourceService<CustomerRequest, Customer> sourceManager;
 
 	@Test
 	void testFindByEmail() throws Exception {
@@ -186,8 +187,8 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		Map<String, String> request = new HashMap<>(1);
 		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
 		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
-				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
-					thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
+				new HttpEntity<>(request, Utils.getHttpHeaders()), CustomerRequest.class)).
+					thenReturn(new ResponseEntity<>(new CustomerRequest(entity), HttpStatus.OK));
 		
 		when(customerRepository.save(entity)).
 			thenReturn(expected);
@@ -252,8 +253,8 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		Map<String, String> request = new HashMap<>(1);
 		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
 		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
-				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
-					thenReturn(new ResponseEntity<>(entity, HttpStatus.OK));
+				new HttpEntity<>(request, Utils.getHttpHeaders()), CustomerRequest.class)).
+					thenReturn(new ResponseEntity<>(new CustomerRequest(entity), HttpStatus.OK));
 		
 		when(customerRepository.findBySourceCodeAndSourceId(sourceCode, sourceId)).
 			thenReturn(Optional.of(expected));
@@ -262,7 +263,7 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 			thenReturn(Optional.of(expected));
 		
 		when(customerRepository.save(entity)).
-			thenReturn(entity);
+			thenReturn(expected);
 		
 		var response = mockMvc.perform(post(url).
 				param("sourceId", sourceId).
@@ -273,21 +274,20 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK.value(), response.getStatus());
 		Customer actual = mapper.readValue(response.getContentAsString(), Customer.class);
-		assertEquals(entity, actual);
+		assertEquals(expected, actual);
 		assertNotEquals(actual, null);
 		assertFalse(actual.isNew());
-		assertEquals(entity, actual);
-		assertEquals(entity.getClass(), actual.getClass());
-		assertEquals(entity.hashCode(), actual.hashCode());
-		assertEquals(entity.getId(), actual.getId());
-		assertEquals(entity.toString(), actual.toString());
+		assertEquals(expected.getClass(), actual.getClass());
+		assertEquals(expected.hashCode(), actual.hashCode());
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.toString(), actual.toString());
 
 		assertFalse(StringUtils.isBlank(actual.getEmail()));
-		assertEquals(entity.getEmail(), actual.getEmail());
-		assertEquals(entity.getLocationId(), actual.getLocationId());
-		assertEquals(entity.getSourceCode(), actual.getSourceCode());
-		assertEquals(entity.getSourceId(), actual.getSourceId());
-		assertEquals(entity.getName(), actual.getName());
+		assertEquals(expected.getEmail(), actual.getEmail());
+		assertEquals(expected.getLocationId(), actual.getLocationId());
+		assertEquals(expected.getSourceCode(), actual.getSourceCode());
+		assertEquals(expected.getSourceId(), actual.getSourceId());
+		assertEquals(expected.getName(), actual.getName());
 	}
 
 
@@ -322,8 +322,8 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		Map<String, String> request = new HashMap<>(1);
 		request.put(SourceServiceImpl.SOURCE_ID_KEY, sourceId);
 		when(restTemplate.exchange(source.getBaseUrl(), HttpMethod.POST,
-				new HttpEntity<>(request, Utils.getHttpHeaders()), Customer.class)).
-					thenReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+				new HttpEntity<>(request, Utils.getHttpHeaders()), CustomerRequest.class)).
+					thenReturn(new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
 
 		var response = mockMvc.perform(post(url).
 				param("sourceId", sourceId).
@@ -332,22 +332,6 @@ class CustomerControllerTest extends AbstractControllerTestContext<Customer> {
 		
 		//then
 		assertNotNull(response);
-		assertEquals(HttpStatus.OK.value(), response.getStatus());
-		Customer actual = mapper.readValue(response.getContentAsString(), Customer.class);
-		assertEquals(expected, actual);
-		assertNotEquals(actual, null);
-		assertFalse(actual.isNew());
-		assertEquals(expected, actual);
-		assertEquals(expected.getClass(), actual.getClass());
-		assertEquals(expected.hashCode(), actual.hashCode());
-		assertEquals(expected.getId(), actual.getId());
-		assertEquals(expected.toString(), actual.toString());
-
-		assertFalse(StringUtils.isBlank(actual.getEmail()));
-		assertEquals(expected.getEmail(), actual.getEmail());
-		assertEquals(expected.getLocationId(), actual.getLocationId());
-		assertEquals(expected.getSourceCode(), actual.getSourceCode());
-		assertEquals(expected.getSourceId(), actual.getSourceId());
-		assertEquals(expected.getName(), actual.getName());
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 	}
 }

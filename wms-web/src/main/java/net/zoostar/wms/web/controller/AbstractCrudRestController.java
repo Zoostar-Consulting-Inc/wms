@@ -9,58 +9,77 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.entity.AbstractMultiSourceStringPersistable;
+import net.zoostar.wms.entity.EntityWrapper;
 import net.zoostar.wms.service.SourceService;
 import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
-public abstract class AbstractCrudRestController<T extends AbstractMultiSourceStringPersistable> {
+public abstract class AbstractCrudRestController<E extends EntityWrapper<T>, T extends AbstractMultiSourceStringPersistable> {
 	
 	@Autowired
-	protected SourceService<T> sourceManager;
+	protected SourceService<E, T> sourceManager;
 
-	protected abstract Class<T> getClazz();
+	protected abstract Class<E> getEntityWrapperClazz();
 	
 	protected abstract StringPersistableCrudService<T> getCrudManager();
 
-	protected abstract T getPersistable(String sourceCode, String sourceId);
-
-	protected T create(String sourceCode, String sourceId) {
-		return getCrudManager().create(
-				sourceManager.retrieve(sourceCode, sourceId, getClazz()));
-	}
+	protected abstract E toEntityWrapper(String sourceCode, String sourceId);
 	
-	protected T retrieveByKey(T entity) {
-		return getCrudManager().retrieveByKey(entity);
+	protected ResponseEntity<T> create(EntityWrapper<T> entity) {
+		return new ResponseEntity<>(getCrudManager().create(entity.toEntity()), HttpStatus.CREATED);
+	}
+
+	protected T retrieveByKey(E entity) {
+		return getCrudManager().retrieveByKey(entity.toEntity());
 	}
 
 	protected ResponseEntity<T> update(String sourceCode, String sourceId) {
-		T entity = null;
 		ResponseEntity<T> response = null;
-
+		E persistable = toEntityWrapper(sourceCode, sourceId);
+		T entity = persistable.toEntity();
+		log.info("Evaluating CRUD operation for entity: {}...", persistable);
 		try {
-			entity = getCrudManager().retrieveByKey(getPersistable(sourceCode, sourceId));
-			response = new ResponseEntity<>(update(entity), HttpStatus.OK);
+			entity = getCrudManager().retrieveByKey(entity);
+			response = update(entity);
 		} catch(EntityNotFoundException e) {
-			log.info(e.getMessage());
-			entity = create(sourceCode, sourceId);
-			response = new ResponseEntity<>(entity, HttpStatus.CREATED);
+			log.info("No existing entity found, proceeding to CREATE new one...");
+			var entityResponse = sourceManager.retrieve(sourceCode, sourceId, getEntityWrapperClazz());
+			if(entityResponse == null || HttpStatus.OK != entityResponse.getStatusCode()) {
+				log.warn("Source system returned response: {}", entityResponse.getStatusCode());
+				response = new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+			} else {
+				persistable = entityResponse.getBody();
+				log.info("Creating new entity from source: {}", persistable);
+				entity = getCrudManager().create(persistable.toEntity());
+				response = new ResponseEntity<>(entity, HttpStatus.CREATED);
+			}
 		}
-		postUpdateListener(entity);
+		postUpdateListener(persistable);
 		return response;
 	}
 
-	protected T update(T entity) {
-		T persistable = null;
+	protected ResponseEntity<T> update(T entity) {
+		ResponseEntity<T> response = null;
 		try {
-			persistable = sourceManager.retrieve(
-					entity.getSourceCode(), entity.getSourceId(), getClazz());
-			persistable.setId(entity.getId());
-			persistable = getCrudManager().update(persistable);
+			var sourceResponse = sourceManager.retrieve(
+					entity.getSourceCode(), entity.getSourceId(), getEntityWrapperClazz());
+			if(sourceResponse == null || HttpStatus.OK != sourceResponse.getStatusCode()) {
+				response = new ResponseEntity<>(HttpStatus.BAD_GATEWAY);
+			} else {
+				var persistable = sourceResponse.getBody();
+				log.info("Updating existing entity from source: {}", persistable);
+				entity = getCrudManager().retrieveByKey(persistable.toEntity());
+				var sourceEntity = persistable.toEntity();
+				sourceEntity.setId(entity.getId());
+				entity = getCrudManager().update(sourceEntity);
+				response = new ResponseEntity<>(entity, HttpStatus.OK);
+			}
 		} catch(EntityNotFoundException e) {
-			log.info(e.getMessage());
-			persistable = delete(entity);
+			log.info("No entity found in source. Proceeding with deletion: {}", entity);
+			entity = delete(entity);
+			response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
-		return persistable;
+		return response;
 	}
 
 	protected T delete(T entity) {
@@ -73,7 +92,7 @@ public abstract class AbstractCrudRestController<T extends AbstractMultiSourceSt
 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}
 
-	protected void postUpdateListener(T entity) {
+	protected void postUpdateListener(E persistable) {
 		// To be implemented, if needed, by extending classes
 	}
 

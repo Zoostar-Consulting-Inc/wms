@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.zoostar.wms.entity.AbstractMultiSourceStringPersistable;
+import net.zoostar.wms.entity.EntityWrapper;
+import net.zoostar.wms.service.SourceService;
 import net.zoostar.wms.service.StringPersistableCrudService;
 
 @Slf4j
@@ -23,10 +26,13 @@ import net.zoostar.wms.service.StringPersistableCrudService;
 @Setter
 @Service
 @Transactional
-public abstract class AbstractPersistableCrudService<T extends AbstractMultiSourceStringPersistable>
+public abstract class AbstractPersistableCrudService<E extends EntityWrapper<T>, T extends AbstractMultiSourceStringPersistable>
 implements StringPersistableCrudService<T> {
 
 	protected abstract PagingAndSortingRepository<T, String> getRepository();
+	
+	@Autowired
+	protected SourceService<E, T> sourceManager;
 
 	@Override
 	public T create(T persistable) {
@@ -54,6 +60,7 @@ implements StringPersistableCrudService<T> {
 			throw new EntityNotFoundException(String.format(
 					"No entity found to update for: %s", persistable.toString()));
 		} else {
+			persistable.setActive(true);
 			persistable.setUpdate(System.currentTimeMillis());
 			return getRepository().save(persistable);
 		}
@@ -74,5 +81,4 @@ implements StringPersistableCrudService<T> {
 		}
 		return entity;
 	}
-
 }

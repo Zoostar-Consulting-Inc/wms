@@ -18,11 +18,12 @@ import net.zoostar.wms.api.inbound.InventorySearchRequest;
 import net.zoostar.wms.entity.Inventory;
 import net.zoostar.wms.service.InventoryService;
 import net.zoostar.wms.service.StringPersistableCrudService;
+import net.zoostar.wms.web.request.InventoryRequest;
 
 @Slf4j
 @RestController
 @RequestMapping("/inventory")
-public class InventoryController extends AbstractCrudRestController<Inventory> {
+public class InventoryController extends AbstractCrudRestController<InventoryRequest, Inventory> {
 
 	@Autowired
 	protected InventoryService inventoryManager;
@@ -40,19 +41,19 @@ public class InventoryController extends AbstractCrudRestController<Inventory> {
 	}
 
 	@Override
-	protected Class<Inventory> getClazz() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	protected StringPersistableCrudService<Inventory> getCrudManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	protected Inventory getPersistable(String sourceCode, String sourceId) {
+	protected Class<InventoryRequest> getEntityWrapperClazz() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected InventoryRequest toEntityWrapper(String sourceCode, String sourceId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
